@@ -59,7 +59,7 @@ for (const p of candidates) {
     console.log(`\x1b[32m✅ naoki-blueprint から .license を自動コピーしました\x1b[0m`);
     console.log(`   送り元: ${p}`);
     console.log(`   → ${TARGET}`);
-    console.log(`   ライセンスID: ${d.license_id}（${d.name}）`);
+    console.log(`   ライセンスID: NK-****-****-****（${d.name}）`);
     process.exit(0);
   } catch (e) {
     // JSONパースエラーは無視して次候補へ
