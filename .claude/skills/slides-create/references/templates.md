@@ -64,9 +64,9 @@
   "titleUnderline": "3つ",
   "catchphrase": "10分で全部わかる",
   "items": [
-    { "number": 1, "title": "前衛の役割",      "desc": "攻撃と守備の基本" },
-    { "number": 2, "title": "ポジショニング",  "desc": "抜かれない立ち位置" },
-    { "number": 3, "title": "配球の選択",      "desc": "確実にポイントを取る" }
+    { "title": "前衛の役割",      "sub": "攻撃と守備の基本",     "icon": "fa-bullseye" },
+    { "title": "ポジショニング",  "sub": "抜かれない立ち位置",   "icon": "fa-map-marker-alt" },
+    { "title": "配球の選択",      "sub": "確実にポイントを取る", "icon": "fa-crosshairs" }
   ]
 }
 ```
@@ -75,9 +75,12 @@
 |---|---|
 | label | 上部ラベル（デフォルト `AGENDA`） |
 | titleUnderline | タイトル内で下線を引く部分 |
-| items[].number | 番号バッジの数字 |
-| items[].title | 項目タイトル |
-| items[].desc | 補足説明 |
+| items[].title | 項目タイトル（必須） |
+| items[].sub | 補足説明（省略可） |
+| items[].icon | 右端のアイコン（省略可、FontAwesome） |
+
+**⚠ 注意:** `items[].number` は**使わない**。番号は自動で `01, 02, 03...` が振られる。<br>
+**⚠ 注意:** 補足は `desc` ではなく **`sub`**。
 
 ---
 
@@ -174,14 +177,22 @@
   "titleUnderline": "3ステップ",
   "catchphrase": "順番が大事",
   "steps": [
-    { "num": 1, "style": "green",     "label": "準備",  "content": "ルーティンを<br>決める" },
-    { "num": 2, "style": "gray",      "label": "実行",  "content": "判断を手放さない" },
-    { "num": 3, "style": "highlight", "label": "振り返り","content": "1本1本を言語化<br>する" }
+    { "num": 1, "style": "green",     "icon": "fa-clipboard-check", "label": "準備",     "content": "ルーティンを<br>決める" },
+    { "num": 2, "style": "gray",      "icon": "fa-eye",              "label": "実行",     "content": "判断を手放さない" },
+    { "num": 3, "style": "highlight", "icon": "fa-pen",              "label": "振り返り", "content": "1本1本を言語化<br>する" }
   ]
 }
 ```
 
-- `style`: `"green"`（通常）/ `"gray"`（補足）/ `"highlight"`（最重要）
+| フィールド | 説明 |
+|---|---|
+| steps[].num | ステップ番号（背景に大きく表示） |
+| steps[].style | `"green"`（通常）/ `"gray"`（補足）/ `"highlight"`（最重要） |
+| steps[].icon | 左の円内アイコン（必須・FontAwesome） |
+| steps[].label | ステップ名（小さく上に表示） |
+| steps[].content | 内容（`<br>` で改行可） |
+
+**⚠ 注意:** `icon` を省略すると左の円が空になる。
 
 ---
 
@@ -271,12 +282,21 @@
   "title": "数字で見る成果",
   "titleHighlight": "成果",
   "stats": [
-    { "number": "90",  "unit": "%",  "label": "勝率UP" },
-    { "number": "2.5", "unit": "倍", "label": "守備範囲" },
-    { "number": "1",   "unit": "年", "label": "A級到達" }
+    { "icon": "fa-chart-line", "number": "90",  "unit": "%",  "desc": "勝率UP" },
+    { "icon": "fa-shield-alt", "number": "2.5", "unit": "倍", "desc": "守備範囲" },
+    { "icon": "fa-trophy",     "number": "1",   "unit": "年", "desc": "A級到達" }
   ]
 }
 ```
+
+| フィールド | 説明 |
+|---|---|
+| stats[].icon | 円内のアイコン（必須・FontAwesome） |
+| stats[].number | 数字（必須） |
+| stats[].unit | 単位（%/倍/年 等） |
+| stats[].desc | 下のラベル（必須） |
+
+**⚠ 注意:** ラベルは `label` ではなく **`desc`**。アイコンが無いと円が空になる。
 
 ---
 
