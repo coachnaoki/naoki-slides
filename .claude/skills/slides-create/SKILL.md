@@ -12,15 +12,19 @@ allowed-tools: Read, Write, Edit, Glob, Grep, Bash(node *), Bash(npm *), Bash(ls
 
 台本.md を読み、17種のテンプレートから最適なものを自動選択してGoogle Slideを完成させる。
 
-## 全体フロー（5ステップ）
+## 全体フロー（6ステップ）
 
 ```
 Step 1. ライセンス認証 & 前提チェック
 Step 2. 台本.md を読み、video-context に相当するプレゼン目的を把握
 Step 3. テンプレート自動選択＋SLIDE_SCRIPT形式のJSON生成
 Step 4. Puppeteerで画像化（scripts/screenshot-slides.mjs）
-Step 5. GAS経由でGoogle Slideに反映（scripts/post-to-gas.mjs）
+Step 5. 📸 プレビュー生成＆ブラウザ表示（scripts/generate-preview.mjs）
+        → ユーザー目視確認「OKなら反映して」「○枚目を直して」
+Step 6. ユーザーOKなら GAS経由でGoogle Slideに反映（scripts/post-to-gas.mjs）
 ```
+
+**重要**: Step 5 のプレビュー確認は必須。GAS送信は取り消しが面倒（Slide全削除→再作成）なので、必ず事前確認を挟む。
 
 ---
 
@@ -185,19 +189,41 @@ node scripts/screenshot-slides.mjs "$PRESEN_DIR"
 - Puppeteerがタイムアウト → フォント読み込みが遅い可能性。`--waitUntil=networkidle2` に変える or 待ち時間を延ばす（scripts/screenshot-slides.mjs を Edit）
 - 画像が白紙 → JSONのキー名ミス。`references/templates.md` と照合
 
-### 画像確認（推奨）
+---
 
-最低1枚は目視確認する：
+## Step 5. プレビュー生成＆ユーザー確認（必須）
 
 ```bash
-open "$PRESEN_DIR/output/slide_001.png"
+node scripts/generate-preview.mjs "$PRESEN_DIR"
 ```
 
-明らかに崩れている場合は Step 3 に戻る。
+動作:
+- `$PRESEN_DIR/preview.html` が自動生成される
+- ブラウザが自動でオープンして**全スライドを1列縦並びで表示**
+- ユーザーが全スライドを目視確認
+
+### ユーザーへの呼びかけ
+
+```
+プレビューをブラウザで開きました！
+全{N}枚を確認して、次のいずれかで教えてください:
+  ✅ 「OK、Google Slideに反映して」
+  🔄 「○枚目の〜を直して」
+  🔄 「○枚目と○枚目のテンプレを入れ替えて」
+```
+
+ユーザーの指示を待つ：
+- **OK** → Step 6 へ
+- **修正指示** → 指定された修正を slide-data.json に反映 → Step 4 からやり直し（画像再生成→プレビュー再生成）
+- **やり直し**（構成ごと変えたい）→ Step 3 からやり直し
+
+### 失敗時の対処
+- プレビューが開かない → `open "$PRESEN_DIR/preview.html"` を手動実行
+- 画像が404になる → 相対パス `output/slide_NNN.png` が存在するか確認
 
 ---
 
-## Step 5. GAS経由でGoogle Slideに反映
+## Step 6. GAS経由でGoogle Slideに反映
 
 ```bash
 node scripts/post-to-gas.mjs "$PRESEN_DIR"
