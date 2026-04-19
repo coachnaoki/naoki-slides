@@ -1,0 +1,504 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Naoki式 AI スライド自動生成テンプレート - ガイド</title>
+<style>
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+  body {
+    font-family: 'Helvetica Neue', 'Hiragino Kaku Gothic ProN', 'メイリオ', sans-serif;
+    background: #f5f5f5;
+    color: #333;
+    line-height: 1.8;
+  }
+  .container {
+    max-width: 800px;
+    margin: 0 auto;
+    padding: 40px 20px;
+  }
+  .header {
+    text-align: center;
+    margin-bottom: 40px;
+  }
+  .header h1 {
+    font-size: 28px;
+    color: #121212;
+    margin-bottom: 8px;
+  }
+  .header p {
+    font-size: 14px;
+    color: #666;
+  }
+  .card {
+    background: #fff;
+    border: 1px solid #ddd;
+    border-radius: 12px;
+    padding: 32px 40px;
+    margin-bottom: 24px;
+    box-shadow: 0 2px 8px rgba(0,0,0,0.06);
+  }
+  .card h2 {
+    font-size: 20px;
+    color: #121212;
+    margin-bottom: 16px;
+    padding-left: 12px;
+    border-left: 4px solid #CCFF00;
+  }
+  .card h3 {
+    font-size: 16px;
+    color: #121212;
+    margin-top: 20px;
+    margin-bottom: 8px;
+  }
+  .card p {
+    font-size: 14px;
+    color: #444;
+    margin-bottom: 10px;
+  }
+  strong { color: #121212; }
+  code {
+    background: #f0f0f0;
+    color: #121212;
+    padding: 2px 6px;
+    border-radius: 4px;
+    font-size: 13px;
+    font-family: 'SF Mono', 'Menlo', monospace;
+  }
+  pre {
+    background: #1a1a2e;
+    border-radius: 8px;
+    padding: 16px 20px;
+    margin: 12px 0 16px;
+    overflow-x: auto;
+    font-size: 13px;
+    line-height: 1.7;
+  }
+  pre code {
+    background: none;
+    color: #e0e0e0;
+    padding: 0;
+  }
+  .comment { color: #666; }
+  .highlight { color: #CCFF00; }
+  table {
+    width: 100%;
+    border-collapse: collapse;
+    margin: 12px 0 16px;
+    font-size: 13px;
+  }
+  th {
+    background: #f9f9f9;
+    color: #121212;
+    padding: 10px 12px;
+    text-align: left;
+    border: 1px solid #ddd;
+    font-weight: bold;
+  }
+  td {
+    padding: 10px 12px;
+    border: 1px solid #ddd;
+    color: #444;
+  }
+  .note {
+    background: #f9f9f9;
+    border-left: 4px solid #CCFF00;
+    padding: 12px 16px;
+    margin: 12px 0 16px;
+    font-size: 13px;
+    color: #444;
+    border-radius: 0 8px 8px 0;
+  }
+  .warning {
+    background: #fff5f5;
+    border-left: 4px solid #e53e3e;
+    padding: 12px 16px;
+    margin: 12px 0 16px;
+    font-size: 13px;
+    color: #444;
+    border-radius: 0 8px 8px 0;
+  }
+  .step-number {
+    display: inline-block;
+    background: #121212;
+    color: #CCFF00;
+    font-weight: 900;
+    width: 28px;
+    height: 28px;
+    line-height: 28px;
+    text-align: center;
+    border-radius: 50%;
+    margin-right: 8px;
+    font-size: 14px;
+  }
+  .workflow-card {
+    background: #fff;
+    border: 1px solid #ddd;
+    border-radius: 12px;
+    padding: 24px 32px;
+    margin-bottom: 24px;
+    box-shadow: 0 2px 8px rgba(0,0,0,0.06);
+  }
+  .workflow-card h2 {
+    font-size: 20px;
+    color: #121212;
+    margin-bottom: 20px;
+    padding-left: 12px;
+    border-left: 4px solid #CCFF00;
+  }
+  .phase {
+    font-size: 14px;
+    font-weight: 700;
+    color: #121212;
+    background: #f0f7e6;
+    padding: 6px 12px;
+    border-radius: 6px;
+    margin: 16px 0 8px;
+    border-left: 3px solid #CCFF00;
+  }
+  .phase:first-child { margin-top: 0; }
+  .step-row {
+    display: flex;
+    gap: 12px;
+    padding: 4px 0 4px 16px;
+    font-size: 13px;
+    line-height: 1.6;
+  }
+  .step-cmd {
+    font-family: 'SF Mono', 'Menlo', monospace;
+    color: #121212;
+    font-weight: 600;
+    white-space: nowrap;
+    min-width: 200px;
+  }
+  .step-desc { color: #666; }
+  .arrow {
+    text-align: center;
+    color: #ccc;
+    font-size: 14px;
+    margin: 8px 0;
+  }
+  .folder-tree pre {
+    background: #f9f9f9;
+    border: 1px solid #ddd;
+    color: #333;
+  }
+  .folder-tree pre code { color: #333; }
+  .folder-tree .comment { color: #999; }
+  a { color: #2563EB; text-decoration: none; }
+  a:hover { text-decoration: underline; }
+  .code-wrap {
+    position: relative;
+  }
+  .copy-btn {
+    position: absolute;
+    top: 8px;
+    right: 8px;
+    background: rgba(255,255,255,0.15);
+    border: 1px solid rgba(255,255,255,0.25);
+    color: #ccc;
+    font-size: 12px;
+    padding: 4px 10px;
+    border-radius: 4px;
+    cursor: pointer;
+    font-family: inherit;
+    transition: background 0.2s, color 0.2s;
+  }
+  .copy-btn:hover { background: rgba(255,255,255,0.25); color: #fff; }
+  .copy-btn.copied { background: #CCFF00; color: #121212; border-color: #CCFF00; }
+  ul { margin: 8px 0 12px 24px; color: #444; font-size: 14px; }
+  li { margin-bottom: 4px; }
+  ol { margin: 8px 0 12px 24px; color: #444; font-size: 14px; }
+  hr {
+    border: none;
+    border-top: 1px solid #eee;
+    margin: 8px 0;
+  }
+  .footer {
+    text-align: center;
+    margin-top: 40px;
+    padding-top: 24px;
+    border-top: 1px solid #ddd;
+    font-size: 13px;
+    color: #999;
+  }
+</style>
+</head>
+<body>
+<div class="container">
+
+<div class="header">
+  <h1>Naoki式 AI スライド自動生成テンプレート</h1>
+  <p>台本テキストを渡すだけで Google Slides が完成する naoki-slides のセットアップガイド</p>
+</div>
+
+<!-- 前提 -->
+<div class="card" style="border-left: 4px solid #fbbf24;">
+  <h2>⚠ 前提：naoki-blueprint 生徒限定</h2>
+  <p>本テンプレは <a href="https://github.com/coachnaoki/naoki-blueprint">naoki-blueprint</a> 生徒限定です。ライセンスIDは naoki-blueprint で発行されたものをそのまま使います（新規に ID は発行しません）。</p>
+  <p>naoki-blueprint を未導入の方は、まず <a href="https://coachnaoki.github.io/naoki-blueprint/">naoki-blueprint のセットアップ</a> を先にお願いします。</p>
+</div>
+
+<!-- Step 1 -->
+<div class="card">
+  <h2><span class="step-number">1</span> リポジトリをダウンロード</h2>
+
+  <div class="warning"><strong>⚠ 事前準備:</strong> すでに Claude Code を開いている方は、ターミナル上で <strong>Ctrl+C</strong>（Mac は <strong>Control+C</strong>）を <strong>2回押して</strong>終了してから進めてください。</div>
+
+  <p>Cursor のターミナルで、<code>naoki-slides</code> を置きたいフォルダに移動します（naoki-blueprint と同じ階層に置くのが推奨・自動でライセンスを引き継ぎできます）。</p>
+
+  <h3>Mac の場合</h3>
+  <pre><code>cd ~/Desktop/Cursor</code></pre>
+
+  <h3>Windows (PowerShell) の場合</h3>
+  <pre><code>cd ~\Desktop\Cursor</code></pre>
+
+  <hr>
+
+  <p>そのフォルダでリポジトリをダウンロード（Mac / Windows 共通）:</p>
+  <pre><code>git clone https://github.com/coachnaoki/naoki-slides.git
+cd naoki-slides
+npm install</code></pre>
+</div>
+
+<!-- Step 2 -->
+<div class="card">
+  <h2><span class="step-number">2</span> ライセンス認証</h2>
+  <p><strong>naoki-blueprint で発行されたライセンスID</strong> をそのまま使います（新規 ID は発行されません）。</p>
+
+  <h3>🚀 おすすめ: naoki-blueprint から自動コピー</h3>
+  <p>naoki-blueprint で既に認証済みなら、<strong>ID を打ち直さずに自動コピー</strong>できます：</p>
+  <pre><code>node tools/find-license.mjs</code></pre>
+  <p>同じ PC で <code>naoki-blueprint/.license</code> が見つかれば自動コピー。ID は打たなくて OK。</p>
+
+  <h3>手動で認証する場合</h3>
+  <pre><code>node tools/validateLicense.mjs NK-XXXX-XXXX-XXXX</code></pre>
+  <p>認証に成功すると <code>✓ {あなたの名前} さん、認証済みです</code> と表示されます。</p>
+
+  <div class="note">PC を変更する場合は Chatwork で Naoki に個別メッセージしてください。</div>
+</div>
+
+<!-- Step 3 -->
+<div class="card">
+  <h2><span class="step-number">3</span> セットアップスクリプトを実行</h2>
+  <p>Google Slide テンプレと GAS（書き込み用スクリプト）を自分の Drive にセットアップします。</p>
+
+  <h3>Mac の場合</h3>
+  <pre><code>./セットアップ.sh</code></pre>
+
+  <h3>Windows (PowerShell) の場合</h3>
+  <pre><code>bash セットアップ.sh</code></pre>
+
+  <p>対話形式で以下を順番に案内されます：</p>
+
+  <h3>Step 3-1. Slide テンプレを自分の Drive にコピー</h3>
+  <ol>
+    <li>画面に表示されたリンクを開く（「コピーを作成」ボタンが自動で表示）</li>
+    <li><strong>「コピーを作成」</strong> を押す → 自分の Drive に Slide + GAS スクリプトが一緒にコピーされる</li>
+    <li>コピー後に開いた Slide の URL をそのままコピー</li>
+    <li>ターミナルに URL を貼り付けて Enter</li>
+  </ol>
+
+  <h3>Step 3-2. GAS をデプロイして URL を取得</h3>
+  <ol>
+    <li>Step 3-1 でコピーした Slide を開いたまま、上部メニュー <strong>「拡張機能」→「Apps Script」</strong> をクリック → 新しいタブでスクリプトエディタが開く</li>
+    <li>画面右上の <strong>「デプロイ」→「新しいデプロイ」</strong></li>
+    <li>歯車アイコン → <strong>「ウェブアプリ」</strong> を選択</li>
+    <li>次のユーザーとして実行: <strong>「自分」</strong></li>
+    <li>アクセスできるユーザー: <strong>「全員」</strong>（「自分のみ」だと CLI から叩けません）</li>
+    <li><strong>「デプロイ」</strong> を押す</li>
+    <li>初回は承認ダイアログ：<strong>「詳細」→「{プロジェクト名}（安全ではないページ）に移動」→ 許可</strong></li>
+    <li>表示された <strong>「ウェブアプリ URL」</strong> をコピー</li>
+    <li>ターミナルに URL を貼り付けて Enter</li>
+  </ol>
+
+  <div class="note"><strong>なぜ「全員」？</strong> CLI からリクエストを送るため。URL は推測困難なので、セキュリティ上は問題ありません。</div>
+  <div class="note">完了すると <code>.env</code> が自動生成されます。以降は触らなくて OK。</div>
+</div>
+
+<!-- Step 4 -->
+<div class="card">
+  <h2><span class="step-number">4</span> 新規プレゼンを作成</h2>
+  <p>ここから毎回の作業。プレゼン1本ごとに専用フォルダを作ります。</p>
+
+  <h3>Mac の場合</h3>
+  <pre><code>./新規スライド.sh</code></pre>
+
+  <h3>Windows (PowerShell) の場合</h3>
+  <pre><code>bash 新規スライド.sh</code></pre>
+
+  <p>プレゼン名を聞かれるので入力（例: <code>tennis-camp-2026</code>）。<br>
+  → <code>projects/tennis-camp-2026/script/台本.md</code> が作られ、<strong>自動でエディタで開きます</strong>。</p>
+</div>
+
+<!-- Step 5 -->
+<div class="card">
+  <h2><span class="step-number">5</span> 台本を書く</h2>
+  <p>開かれた <code>script/台本.md</code> に自由に書きます。<strong>話し言葉・箇条書き・見出し混在でOK</strong>。</p>
+  <p><strong>ファイル形式は自由</strong>：<code>.md</code> じゃなくても <code>.txt</code> や他の拡張子でも動きます。<code>script/</code> フォルダに台本ファイルが1つ入っていればOK。</p>
+
+  <div class="note">Claudeが台本を解析 → 17種類のテンプレート（タイトル／3カード／ステップ／対比／統計 等）から最適なものを自動選択してスライド化します。</div>
+</div>
+
+<!-- Step 6 -->
+<div class="card">
+  <h2><span class="step-number">6</span> Claude Code でスキル起動</h2>
+  <p>プレゼンフォルダに移動して Claude Code を起動：</p>
+  <pre><code>cd projects/tennis-camp-2026
+claude --dangerously-skip-permissions</code></pre>
+
+  <p>Claude Code が立ち上がったら、以下を入力：</p>
+  <pre><code>/slides-create</code></pre>
+
+  <p>自動で以下の流れが走ります：</p>
+  <ol>
+    <li>台本を解析してスライド構成を設計</li>
+    <li>構成案を提示 → あなたが OK と言うまで JSON 確定しない</li>
+    <li>Puppeteer で画像化（1280×720 PNG × N枚）</li>
+    <li>プレビューをブラウザで自動表示 → 目視確認</li>
+    <li>OK なら GAS 経由で Google Slide に反映</li>
+    <li>完成 URL が返ってくる → ブラウザで開いて確認</li>
+  </ol>
+
+  <div class="note">約1分で完成。編集したい場合は <code>script/</code> 内の台本を修正して再実行してください。</div>
+</div>
+
+<!-- Update -->
+<div class="card" style="border-left: 4px solid #fbbf24;">
+  <h2>アップデート（バージョンアップ）</h2>
+  <p>テンプレートが更新されたら、以下のコマンドで最新版に置き換えできます。<br>
+  <strong>あなたが作った <code>projects/</code> と <code>.license</code> / <code>.env</code> は上書きされず安全です。</strong></p>
+
+  <h3>Mac の場合</h3>
+  <pre><code>cd ~/Desktop/Cursor/naoki-slides
+./アップデート.sh</code></pre>
+
+  <h3>Windows (PowerShell) の場合</h3>
+  <pre><code>cd ~\Desktop\Cursor\naoki-slides
+bash アップデート.sh</code></pre>
+</div>
+
+<!-- Workflow -->
+<div class="workflow-card">
+  <h2>裏側で走っている処理（参考）</h2>
+
+  <div class="phase">フェーズ1: 設計</div>
+  <div class="step-row"><span class="step-cmd">台本解析</span><span class="step-desc">Claude が章立て・数字・キーワードを抽出</span></div>
+  <div class="step-row"><span class="step-cmd">テンプレート選択</span><span class="step-desc">17種から最適なテンプレを自動選択</span></div>
+  <div class="step-row"><span class="step-cmd">構成案提示</span><span class="step-desc">あなたに OK を貰う（必須）</span></div>
+
+  <div class="arrow">↓</div>
+
+  <div class="phase">フェーズ2: 生成</div>
+  <div class="step-row"><span class="step-cmd">JSON 生成</span><span class="step-desc">slide-data.json を書き出し</span></div>
+  <div class="step-row"><span class="step-cmd">Puppeteer 画像化</span><span class="step-desc">HTMLテンプレを 1280×720 PNG にキャプチャ</span></div>
+  <div class="step-row"><span class="step-cmd">プレビュー表示</span><span class="step-desc">ブラウザで全枚数を縦並びに表示</span></div>
+
+  <div class="arrow">↓</div>
+
+  <div class="phase">フェーズ3: 反映</div>
+  <div class="step-row"><span class="step-cmd">GAS へ POST</span><span class="step-desc">Base64化した画像を Webhook で送信</span></div>
+  <div class="step-row"><span class="step-cmd">Slide 書き換え</span><span class="step-desc">GAS が既存スライドを全削除 → 画像を貼り付け</span></div>
+  <div class="step-row"><span class="step-cmd">完成</span><span class="step-desc">Google Slide の URL が返る</span></div>
+</div>
+
+<!-- 17 templates -->
+<div class="card">
+  <h2>17種類のテンプレート（自動選択）</h2>
+  <p>Claude が台本の内容から適切なテンプレートを自動選択します。</p>
+  <table>
+    <tr><th>テンプレート</th><th>用途</th></tr>
+    <tr><td><code>title</code></td><td>表紙・タイトルページ</td></tr>
+    <tr><td><code>agenda</code></td><td>アジェンダ・目次</td></tr>
+    <tr><td><code>section</code></td><td>セクション区切り</td></tr>
+    <tr><td><code>three-cards</code></td><td>3つのポイント・特徴</td></tr>
+    <tr><td><code>three-tactics</code></td><td>3つの戦術・役割</td></tr>
+    <tr><td><code>two-columns</code></td><td>2つの対比・比較</td></tr>
+    <tr><td><code>steps</code></td><td>手順・ステップ</td></tr>
+    <tr><td><code>big-message</code></td><td>重要メッセージ・結論</td></tr>
+    <tr><td><code>before-after</code></td><td>Before/After</td></tr>
+    <tr><td><code>stats</code></td><td>統計・数字</td></tr>
+    <tr><td><code>checklist</code></td><td>チェックリスト</td></tr>
+    <tr><td><code>timeline</code></td><td>時系列・流れ</td></tr>
+    <tr><td><code>ranking</code></td><td>ランキング</td></tr>
+    <tr><td><code>versus</code></td><td>対立・比較</td></tr>
+    <tr><td><code>highlight-box</code></td><td>強調ボックス</td></tr>
+    <tr><td><code>quote</code></td><td>引用・名言</td></tr>
+    <tr><td><code>closing</code></td><td>締め・CTA</td></tr>
+  </table>
+</div>
+
+<!-- Folder structure -->
+<div class="card">
+  <h2>フォルダ構成</h2>
+  <div class="folder-tree">
+  <pre><code>naoki-slides/                     <span class="comment">← ダウンロードしたフォルダ</span>
+├── README.md                     <span class="comment">← ガイド</span>
+├── セットアップ.sh                 <span class="comment">← 初回セットアップ（.env 自動生成）</span>
+├── 新規スライド.sh                 <span class="comment">← 新規プレゼン作成</span>
+├── アップデート.sh                 <span class="comment">← 最新版に更新</span>
+├── .claude/skills/slides-create/  <span class="comment">← メインスキル</span>
+├── .template-project/             <span class="comment">← 新規プレゼンの雛形</span>
+│   └── script/台本.md
+├── templates/slides.html          <span class="comment">← 17種テンプレ</span>
+├── tools/                         <span class="comment">← Node/JSユーティリティ</span>
+│   ├── validateLicense.mjs
+│   ├── find-license.mjs
+│   ├── screenshot-slides.mjs
+│   ├── generate-preview.mjs
+│   └── post-to-gas.mjs
+├── gas/                           <span class="comment">← GAS本体（参考）</span>
+│
+└── projects/                      <span class="comment">← あなたのプレゼン（gitignore）</span>
+    └── {プレゼン名}/
+        ├── script/台本.md          <span class="comment">← 台本（形式自由）</span>
+        ├── slide-data.json         <span class="comment">← Claudeが生成</span>
+        └── output/                 <span class="comment">← スライド画像</span></code></pre>
+  </div>
+</div>
+
+<!-- Support -->
+<div class="card" style="border-left: 4px solid #22d3ee;">
+  <h2>困ったとき / サポート</h2>
+  <p>ライセンス ID を忘れた、インストールで詰まった、GAS デプロイでエラーが出る等、何かあれば <strong>Chatwork で Naoki に個別メッセージ</strong>してください。</p>
+  <p style="margin-top: 12px;">
+    <a href="https://www.chatwork.com/Coach_Naoki" target="_blank" style="display: inline-block; background: #22d3ee; color: #050506; padding: 10px 20px; border-radius: 6px; font-weight: 700; text-decoration: none;">Chatwork で Naoki に連絡 →</a>
+  </p>
+</div>
+
+<!-- License -->
+<div class="card">
+  <h2>ライセンス</h2>
+  <p>本テンプレートのスキルファイルに関する著作権その他一切の知的財産権は、権利者（小林 尚貴）に帰属します。</p>
+  <p>姉妹プロジェクト：<a href="https://coachnaoki.github.io/naoki-blueprint/">naoki-blueprint</a></p>
+</div>
+
+<div class="footer">
+  &copy; Naoki Kobayashi
+</div>
+
+</div>
+<script>
+document.querySelectorAll('pre').forEach(pre => {
+  if (pre.closest('.folder-tree')) return;
+  const wrap = document.createElement('div');
+  wrap.className = 'code-wrap';
+  pre.parentNode.insertBefore(wrap, pre);
+  wrap.appendChild(pre);
+  const btn = document.createElement('button');
+  btn.className = 'copy-btn';
+  btn.textContent = 'Copy';
+  btn.addEventListener('click', () => {
+    const code = pre.querySelector('code');
+    const text = code ? code.innerText : pre.innerText;
+    navigator.clipboard.writeText(text).then(() => {
+      btn.textContent = 'Copied!';
+      btn.classList.add('copied');
+      setTimeout(() => { btn.textContent = 'Copy'; btn.classList.remove('copied'); }, 1500);
+    });
+  });
+  wrap.appendChild(btn);
+});
+</script>
+</body>
+</html>
