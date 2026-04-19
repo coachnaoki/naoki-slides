@@ -2,7 +2,9 @@
 
 **台本を渡すだけで Google Slides が完成する、Naoki式 AI スライド自動生成テンプレート。**
 
-naoki-blueprint（動画制作テンプレート）の姉妹プロジェクト。ライセンスIDは共通です。
+> ⚠️ **本テンプレは [naoki-blueprint](https://github.com/coachnaoki/naoki-blueprint) 生徒限定です。**
+> ライセンスIDは naoki-blueprint で発行されたものをそのまま使います。新規にIDは発行しません。
+> naoki-blueprint を未導入の方は、まず [naoki-blueprint](https://github.com/coachnaoki/naoki-blueprint) のセットアップを先にお願いします。
 
 ---
 
@@ -28,13 +30,18 @@ npm install
 
 ### 2. ライセンス認証
 
-naoki-blueprint と同じライセンスIDが使えます。
+**naoki-blueprint で発行されたライセンスID** を使います（新規IDは発行されません）。
 
 ```bash
 node scripts/validateLicense.mjs NK-XXXX-XXXX-XXXX
 ```
 
 認証に成功すると `✓ {あなたの名前} さん、認証済みです` と表示されます。
+
+> 💡 ヒント: naoki-blueprint フォルダに `.license` ファイルが既に存在する場合、それを naoki-slides フォルダにコピーすれば認証ステップをスキップできます（同じPC前提）:
+> ```bash
+> cp ../naoki-blueprint/.license .
+> ```
 
 ### 3. セットアップスクリプトを実行
 
@@ -126,7 +133,10 @@ naoki-slides/
 A. 画像として貼り付けているため編集不可です。修正は `台本.md` を編集して再実行してください。
 
 **Q. ライセンスIDを忘れた**
-A. X で [@ai_skill_naoki](https://x.com/ai_skill_naoki) をフォロー → DM してください。
+A. naoki-blueprint の `.license` ファイル内に保存されているので、そちらを確認してください（`cat ~/Desktop/Cursor/naoki-blueprint/.license | grep license_id`）。それでも不明な場合は X で [@ai_skill_naoki](https://x.com/ai_skill_naoki) をフォロー → DM してください。
+
+**Q. naoki-blueprint を導入していないが、naoki-slides だけ使いたい**
+A. 申し訳ありません、naoki-slides は naoki-blueprint 生徒限定で、単体でのライセンス発行は行っていません。
 
 **Q. GASのデプロイでエラーが出る**
 A. 「アクセスできるユーザー」を「自分のみ」にしたか確認してください。「全員」は避けてください（セキュリティリスク）。
