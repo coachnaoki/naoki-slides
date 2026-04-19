@@ -55,25 +55,28 @@ function syncSlides({ slideId, images }) {
   const presentation = SlidesApp.openById(slideId);
   if (!presentation) throw new Error(`Google Slide が開けません: ${slideId}`);
 
-  // 1. 既存スライドを全削除（1枚だけ残して最後に削除）
+  // 1. 既存スライドを全削除（2枚目以降を先に削除）
   const existingSlides = presentation.getSlides();
   for (let i = existingSlides.length - 1; i >= 1; i--) {
     existingSlides[i].remove();
   }
-  // 最後の1枚は「空白レイアウト」に差し替えて再利用準備
-  const firstSlide = existingSlides[0];
-  firstSlide.getPageElements().forEach(el => el.remove());
 
-  // 2. スライドサイズを16:9で統一（1280x720ptベース）
-  // SlidesApp は pt 単位。1280x720px = 960x540pt (1:0.75)
-  // デフォルトは 10x5.625インチ = 720x405pt。画像をぴったり置くにはこれに合わせる
-  const pageWidth = presentation.getPageWidth();   // デフォルト 720pt
-  const pageHeight = presentation.getPageHeight(); // デフォルト 405pt
+  // 2. 1枚目が存在するなら空白化して再利用、無ければ新規追加
+  let firstSlide = presentation.getSlides()[0];
+  if (firstSlide) {
+    firstSlide.getPageElements().forEach(el => el.remove());
+  } else {
+    firstSlide = presentation.appendSlide(SlidesApp.PredefinedLayout.BLANK);
+  }
 
-  // 3. 1枚目: 既存の空白スライドに画像を貼る
+  // 3. スライドサイズ取得（1280×720px = 960×540pt または 720×405pt）
+  const pageWidth = presentation.getPageWidth();
+  const pageHeight = presentation.getPageHeight();
+
+  // 4. 1枚目: 空白化した1枚目に画像を貼る
   insertImage(firstSlide, images[0], pageWidth, pageHeight);
 
-  // 4. 2枚目以降: 新規スライド（BLANK layout）追加して画像を貼る
+  // 5. 2枚目以降: 新規スライド（BLANK layout）追加して画像を貼る
   for (let i = 1; i < images.length; i++) {
     const newSlide = presentation.appendSlide(SlidesApp.PredefinedLayout.BLANK);
     insertImage(newSlide, images[i], pageWidth, pageHeight);
