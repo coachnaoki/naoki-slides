@@ -1,0 +1,15 @@
+{
+  "name": "naoki-slides",
+  "version": "0.1.0",
+  "description": "台本からGoogle Slidesを自動生成するNaoki式AIスライドテンプレート",
+  "type": "module",
+  "private": true,
+  "scripts": {
+    "validate": "node scripts/validateLicense.mjs",
+    "check": "node scripts/_chk.mjs"
+  },
+  "dependencies": {
+    "dotenv": "^16.4.5",
+    "puppeteer": "^24.22.0"
+  }
+}

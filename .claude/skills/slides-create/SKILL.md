@@ -1,0 +1,273 @@
+---
+name: slides-create
+description: 台本テキストからGoogle Slidesを自動生成するnaoki-slides専用スキル。台本の内容を解析して17種類のプロ仕様テンプレート（title/three-cards/steps/stats/checklist/timeline/ranking 等）から最適なものを自動選択し、Puppeteerで画像化してGAS経由で生徒指定のGoogle Slideに反映する。ユーザーが「スライド作って」「スライド生成」「プレゼン作って」「Google Slideにして」「slides-create」と言ったら、明示的にスキル名を言わなくても必ず起動する。presentations/ 配下で作業している時や、台本.mdがあるプロジェクト内ではスライド生成の意図を示唆するあらゆる発言で優先起動する。
+argument-hint: [presentations配下のプレゼンフォルダ名（省略可・現在ディレクトリから自動検出）]
+allowed-tools: Read, Write, Edit, Glob, Grep, Bash(node *), Bash(npm *), Bash(ls *), Bash(cat *), Bash(pwd *), Bash(open *)
+---
+
+<!-- LICENSE_GUARD: DO NOT REMOVE -->
+> **認証必須**: このスキルの開始前に `node scripts/_chk.mjs` を実行。exit code が 0 以外なら即中止し「ライセンスが無効です。権利者にお問い合わせください」と伝える。（詳細は CLAUDE.md の「ライセンス認証」セクション参照）
+
+# slides-create: 台本→Google Slides 自動生成
+
+台本.md を読み、17種のテンプレートから最適なものを自動選択してGoogle Slideを完成させる。
+
+## 全体フロー（5ステップ）
+
+```
+Step 1. ライセンス認証 & 前提チェック
+Step 2. 台本.md を読み、video-context に相当するプレゼン目的を把握
+Step 3. テンプレート自動選択＋SLIDE_SCRIPT形式のJSON生成
+Step 4. Puppeteerで画像化（scripts/screenshot-slides.mjs）
+Step 5. GAS経由でGoogle Slideに反映（scripts/post-to-gas.mjs）
+```
+
+---
+
+## Step 1. ライセンス認証 & 前提チェック
+
+### 1-A. ライセンス認証
+
+```bash
+node scripts/_chk.mjs
+```
+
+exit code が 0 以外なら即中止して「ライセンスが無効です」と伝える。
+
+### 1-B. .env の設定確認
+
+```bash
+[ -f .env ] && grep -q "GAS_WEBHOOK_URL" .env && grep -q "GOOGLE_SLIDE_ID" .env && echo "OK" || echo "NG"
+```
+
+`NG` の場合、ユーザーに以下を伝える：
+
+> `.env` ファイルが未設定、またはキーが足りません。
+> README.md の「初回セットアップ」の GAS デプロイ → .env 作成 を完了してから再実行してください。
+
+### 1-C. プレゼンフォルダの特定
+
+```bash
+pwd  # 今どこにいるか確認
+```
+
+- 現在ディレクトリが `presentations/{name}/` 配下 → そのフォルダを使う
+- `naoki-slides/` ルートにいる → ユーザーに「どのプレゼンですか？」と聞く（`ls presentations/` で候補提示）
+- `presentations/` フォルダ自体がない or 空 → 「まず `./新規スライド.sh` でプレゼンを作成してください」と案内
+
+プレゼンフォルダが確定したら、以降 `PRESEN_DIR` として扱う。
+
+### 1-D. 依存パッケージ確認
+
+```bash
+[ -d node_modules ] || npm install
+```
+
+`node_modules/` がなければ install。
+
+---
+
+## Step 2. 台本を読む
+
+```bash
+cat "$PRESEN_DIR/台本.md"
+```
+
+### 読み取るべきこと
+
+1. **プレゼンの目的・対象者**（明記されていれば抽出、なければ推測）
+2. **全体構成**（章立て・ポイント数）
+3. **数字・固有名詞・キーワード**（強調すべき要素）
+4. **温度感**（ロジカル / 熱量高め / 優しい 等）
+
+### 台本が空の場合
+
+`.template-slides/台本.md` のままの雛形テキストが残っている場合は、ユーザーに「台本.md に内容を書いてから再実行してください」と伝えて中止する。
+
+---
+
+## Step 3. SLIDE_SCRIPT を生成
+
+ここがこのスキルの本体。**Claudeが台本を読んで 17種のテンプレから最適なものを選ぶ**。
+
+### 3-A. テンプレート選択の判断基準（優先）
+
+| 場面 | テンプレート |
+|---|---|
+| プレゼン全体のタイトル | `title`（1回目・冒頭） |
+| 章の区切り | `section`（PART番号付き） |
+| 今日話すこと・目次 | `agenda` |
+| 3つのポイントを並列で紹介 | `three-cards` or `three-tactics` |
+| 2つを対比・比較 | `two-columns` or `versus` |
+| 時系列・手順 | `steps` or `timeline` |
+| 変化・改善を見せたい | `before-after` |
+| 大事な数字・統計 | `stats` |
+| チェックしてほしいポイント | `checklist` |
+| 順位付け・ランキング | `ranking` |
+| 名言・引用 | `quote` |
+| 強調・結論 | `big-message` or `highlight-box` |
+| 最後のまとめ・CTA | `closing` |
+
+### 3-B. 構成の鉄則
+
+1. **冒頭は必ず `title`** — プレゼンの顔
+2. **3枚に1枚は視覚変化** — 同じテンプレを連続で3枚以上使わない（退屈防止）
+3. **stats は1プレゼンに最大2回** — 多用すると単調
+4. **最後は `closing`** — アクションを促す
+5. **1プレゼン 8〜15枚を目安**（短すぎても長すぎても集中が切れる）
+
+### 3-C. 各テンプレートのプロパティ仕様
+
+17種すべての正確なプロパティ構造は **必ず `references/templates.md` を読んで確認する**。
+例：`title` には `icon/title/titleHighlight/titleSuffix/subtitle`、`stats` には `title/stats[{number, unit, label}]` 等、フィールドが厳密に決まっている。
+
+誤ったキー名で JSON を作ると画像化時にフィールドが表示されず白紙になるため、references を毎回確認する習慣をつける。
+
+### 3-D. テキスト記述ルール（必読）
+
+全テンプレート共通の改行・ハイライト・文字数ルールは **`references/style-rules.md` に集約**。
+
+特に重要な点：
+- **1項目最大2行**
+- **改行直前に「、」「。」を置かない**
+- **単語の途中で改行しない**
+- **改行タグは `<br>` or `\n` がテンプレごとに異なる**（templates.md 参照）
+- **黄色マーカーは `<span style='background:#CCFF00'>...</span>`**
+
+### 3-E. JSONを書き出す
+
+構成が固まったら `$PRESEN_DIR/slide-data.json` に書き出す。
+
+```bash
+# 例
+cat > "$PRESEN_DIR/slide-data.json" << 'EOF'
+[
+  { "type": "title", "icon": "fa-trophy", "title": "ダブルスで勝つための", "titleHighlight": "前衛の教科書", "subtitle": "..." },
+  { "type": "agenda", "label": "AGENDA", "title": "今日話す3つのこと", "items": [...] },
+  ...
+]
+EOF
+```
+
+実際は Write ツールでJSONファイルを作成する（Bashヒアドキュメントはエスケープが面倒）。
+
+### 3-F. ユーザーに構成案を見せて承認を取る（必須）
+
+画像化の前に、**構成案をテキストで提示してユーザーの承認を得る**。数十秒の Puppeteer 処理を無駄にしないため。
+
+```
+【スライド構成案】（全N枚）
+1. title         — タイトル: 「ダブルスで勝つための前衛の教科書」
+2. agenda        — 今日話す3つのこと
+3. section       — PART 01: 前衛の役割
+4. three-cards   — ポジショニング / タイミング / プレイスメント
+5. stats         — 成功率 +30% / 守備範囲 1.5倍 / …
+6. ...
+N. closing       — 今すぐ実践しよう
+
+このまま進めますか？（修正があれば指示してください）
+```
+
+ユーザーが OK と言うまで JSON を確定しない。修正指示があれば構成を差し替える。
+
+---
+
+## Step 4. 画像化（Puppeteer）
+
+```bash
+node scripts/screenshot-slides.mjs "$PRESEN_DIR"
+```
+
+出力: `$PRESEN_DIR/output/slide_001.png ... slide_NNN.png`（1280×720、@2x解像度）
+
+### 失敗時の対処
+- `Cannot find module 'puppeteer'` → `npm install` 実行
+- Puppeteerがタイムアウト → フォント読み込みが遅い可能性。`--waitUntil=networkidle2` に変える or 待ち時間を延ばす（scripts/screenshot-slides.mjs を Edit）
+- 画像が白紙 → JSONのキー名ミス。`references/templates.md` と照合
+
+### 画像確認（推奨）
+
+最低1枚は目視確認する：
+
+```bash
+open "$PRESEN_DIR/output/slide_001.png"
+```
+
+明らかに崩れている場合は Step 3 に戻る。
+
+---
+
+## Step 5. GAS経由でGoogle Slideに反映
+
+```bash
+node scripts/post-to-gas.mjs "$PRESEN_DIR"
+```
+
+このスクリプトが：
+1. `.env` から `GAS_WEBHOOK_URL` と `GOOGLE_SLIDE_ID` を読む
+2. `output/slide_*.png` を Base64 化して配列で POST
+3. GAS が指定 Google Slide の既存スライドを全削除 → 画像を1枚ずつ貼り付け
+4. 完成URLを返す
+
+### 失敗時の対処
+- `❌ .env に GAS_WEBHOOK_URL と GOOGLE_SLIDE_ID を設定してください` → Step 1-B へ戻る
+- `❌ ネットワークエラー` → GAS WebApp URL が正しいか確認、アクセス権限「自分のみ」になっているか確認
+- GAS エラー → ユーザーに `.env` の `GAS_WEBHOOK_URL` を再デプロイ URL に更新してもらう
+
+---
+
+## 完了報告
+
+以下フォーマットでユーザーに報告：
+
+```
+✅ スライドを生成しました！
+
+【プレゼン】{プレゼンフォルダ名}
+【枚数】{N}枚
+【テンプレート内訳】
+  - title × 1
+  - agenda × 1
+  - three-cards × 2
+  - stats × 1
+  - closing × 1
+  ...
+【出力先】https://docs.google.com/presentation/d/{id}/edit
+
+編集したい場合は 台本.md を修正して再実行してください。
+```
+
+---
+
+## 全体のコツ
+
+### 台本に書かれていないことは勝手に足さない
+
+AI が「この方が盛り上がる」と判断してキャッチコピーや数字を捏造するのは禁止。
+台本にない表現を追加する必要がある場合は、**ユーザーに質問してから**足す。
+
+### スライド1枚 = メッセージ1つ
+
+1枚に情報を詰め込みすぎない。迷ったら分割する。
+
+### 長い文は短く切る
+
+台本にある1文が30文字を超えていたら、スライドでは区切る。句読点・助詞で自然に分割。
+
+### 編集不可の制約を意識
+
+Google Slide上では画像として表示されるため、後からテキスト修正できない。
+**初回で完成度を上げる意識**で構成を組む。
+
+---
+
+## 参考ファイル
+
+- `references/templates.md` — 17種テンプレートの詳細プロパティ仕様（テンプレ選択時に必ず参照）
+- `references/style-rules.md` — テキスト記述ルール・改行・ハイライト書式
+
+## 関連スクリプト
+
+- `scripts/screenshot-slides.mjs` — Puppeteer画像化（直接呼ぶだけ）
+- `scripts/post-to-gas.mjs` — GAS送信（直接呼ぶだけ）
+- `scripts/_chk.mjs` — ライセンス毎回チェック
