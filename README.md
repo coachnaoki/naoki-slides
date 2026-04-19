@@ -147,7 +147,7 @@ naoki-slides/
 A. 画像として貼り付けているため編集不可です。修正は `script/台本.md` を編集して再実行してください。
 
 **Q. ライセンスIDを忘れた**
-A. naoki-blueprint の `.license` ファイル内に保存されているので、そちらを確認してください（`cat ~/Desktop/Cursor/naoki-blueprint/.license | grep license_id`）。それでも不明な場合は X で [@ai_skill_naoki](https://x.com/ai_skill_naoki) をフォロー → DM してください。
+A. naoki-blueprint の `.license` ファイル内に保存されているので、そちらを確認してください（`cat ~/Desktop/Cursor/naoki-blueprint/.license | grep license_id`）。それでも不明な場合は [Chatwork で Naoki に個別メッセージ](https://www.chatwork.com/Coach_Naoki) してください。
 
 **Q. naoki-blueprint を導入していないが、naoki-slides だけ使いたい**
 A. 申し訳ありません、naoki-slides は naoki-blueprint 生徒限定で、単体でのライセンス発行は行っていません。
@@ -168,5 +168,5 @@ A. `./新規スライド.sh` で何度でも作れます。すべて `projects/`
 
 ## サポート
 
-- X: [@ai_skill_naoki](https://x.com/ai_skill_naoki) （フォロー → DM）
+- Chatwork: [Coach_Naoki](https://www.chatwork.com/Coach_Naoki) （個別メッセージ）
 - 姉妹プロジェクト: [naoki-blueprint](https://github.com/coachnaoki/naoki-blueprint)
