@@ -69,17 +69,19 @@ node scripts/validateLicense.mjs NK-XXXX-XXXX-XXXX
 ```
 
 プレゼン名を聞かれるので入力（例: `tennis-camp-2026`）。
-→ `presentations/tennis-camp-2026/` が作られます。
+→ `projects/tennis-camp-2026/script/台本.md` が作られ、**自動でエディタで開きます**。
 
 ### 2. 台本を書く
 
-`presentations/tennis-camp-2026/台本.md` を開いて自由に書く。
-話し言葉・箇条書き・見出し混在でOK。
+開かれた `script/台本.md` に自由に書く。話し言葉・箇条書き・見出し混在でOK。
+
+**ファイル形式は自由**：`.md` じゃなくても `.txt` や他の拡張子でも動きます。
+`script/` フォルダに台本ファイルが1つ入っていればOK。
 
 ### 3. Claude Code でスキル起動
 
 ```bash
-cd presentations/tennis-camp-2026
+cd projects/tennis-camp-2026
 claude --dangerously-skip-permissions
 ```
 
@@ -105,7 +107,7 @@ Claude が Google Slide の URL を返すので、ブラウザで開いて確認
 ./アップデート.sh
 ```
 
-あなたが作った `presentations/` と `.license` / `.env` は上書きされず安全です。
+あなたが作った `projects/` と `.license` / `.env` は上書きされず安全です。
 
 ---
 
@@ -114,11 +116,16 @@ Claude が Google Slide の URL を返すので、ブラウザで開いて確認
 ```
 naoki-slides/
 ├── .claude/skills/slides-create/   # メインスキル
-├── .template-slides/               # 新規プレゼンの雛形
+├── .template-project/              # 新規プレゼンの雛形
+│   └── script/台本.md
 ├── templates/slides.html           # 17種テンプレ（gas-slides由来）
 ├── scripts/                        # 台本解析・画像化・GAS送信
 ├── gas/                            # GAS本体（参考・生徒はテンプレコピーで取得）
-├── presentations/                  # あなたのプレゼン（gitignore）
+├── projects/                       # あなたのプレゼン（gitignore）
+│   └── {プレゼン名}/
+│       ├── script/台本.md          # 台本（形式自由: .md / .txt / ...）
+│       ├── slide-data.json         # Claudeが生成
+│       └── output/                 # スライド画像
 ├── 新規スライド.sh
 ├── セットアップ.sh
 ├── アップデート.sh
@@ -130,7 +137,7 @@ naoki-slides/
 ## よくある質問
 
 **Q. Google Slide上でテキストを編集できない**
-A. 画像として貼り付けているため編集不可です。修正は `台本.md` を編集して再実行してください。
+A. 画像として貼り付けているため編集不可です。修正は `script/台本.md` を編集して再実行してください。
 
 **Q. ライセンスIDを忘れた**
 A. naoki-blueprint の `.license` ファイル内に保存されているので、そちらを確認してください（`cat ~/Desktop/Cursor/naoki-blueprint/.license | grep license_id`）。それでも不明な場合は X で [@ai_skill_naoki](https://x.com/ai_skill_naoki) をフォロー → DM してください。
@@ -148,7 +155,7 @@ A. 「詳細」→「{プロジェクト名}（安全ではないページ）に
 A. 1回あたり10〜30秒程度。それ以上かかる場合は Puppeteer が止まっている可能性があります。Claude に相談してください。
 
 **Q. 複数のプレゼンを作りたい**
-A. `./新規スライド.sh` で何度でも作れます。すべて同じGoogle Slideに上書きされるので、分けたい場合は Google Drive 上で別名コピーしてから次を作ってください。
+A. `./新規スライド.sh` で何度でも作れます。すべて `projects/` 配下に別フォルダで作られます。Google Slideは同じものに上書きされるので、分けたい場合は Google Drive 上で別名コピーしてから次を作ってください。
 
 ---
 

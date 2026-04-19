@@ -2,7 +2,7 @@ node_modules/
 .DS_Store
 .license
 .env
-presentations/
+projects/
 gas/.clasp.json
 gas/node_modules/
 *.log

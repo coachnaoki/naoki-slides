@@ -20,21 +20,30 @@ if [ -z "$PRESEN_NAME" ]; then
   exit 1
 fi
 
-if [ -d "presentations/$PRESEN_NAME" ]; then
-  echo "presentations/$PRESEN_NAME は既に存在します。別の名前を指定してください。"
+if [ -d "projects/$PRESEN_NAME" ]; then
+  echo "projects/$PRESEN_NAME は既に存在します。別の名前を指定してください。"
   exit 1
 fi
 
-mkdir -p presentations
-cp -r .template-slides "presentations/$PRESEN_NAME"
+mkdir -p projects
+cp -r .template-project "projects/$PRESEN_NAME"
+
+SCRIPT_FILE="projects/$PRESEN_NAME/script/台本.md"
 
 echo ""
 echo "=== 完成！ ==="
 echo ""
-echo "次のステップ:"
-echo "  cd presentations/$PRESEN_NAME"
-echo "  claude --dangerously-skip-permissions"
-echo "  /slides-create"
+echo "📝 台本ファイルを自動で開きます..."
+open "$SCRIPT_FILE" 2>/dev/null
+
 echo ""
-echo "台本は presentations/$PRESEN_NAME/台本.md に書き込んでください。"
+echo "次のステップ:"
+echo ""
+echo "  1. 開かれた台本ファイルに内容を書き込む"
+echo "     $SCRIPT_FILE"
+echo ""
+echo "  2. Claude Code でスキル起動:"
+echo "     cd projects/$PRESEN_NAME"
+echo "     claude --dangerously-skip-permissions"
+echo "     /slides-create"
 echo ""

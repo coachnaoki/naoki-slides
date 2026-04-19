@@ -13,7 +13,7 @@
  *   - <presentation-dir>/slide-data.json が既に存在する → 何もせず終了（Claudeが作ったものを尊重）
  *   - 存在しない → 台本.md を最小限パースした雛形を出力（エラー回避用）
  */
-import { readFileSync, writeFileSync, existsSync } from "fs";
+import { readFileSync, writeFileSync, existsSync, readdirSync, statSync } from "fs";
 import { resolve, join } from "path";
 
 const presentationDir = process.argv[2];
@@ -24,7 +24,7 @@ if (!presentationDir) {
 
 const absDir = resolve(presentationDir);
 const dataPath = join(absDir, "slide-data.json");
-const scriptPath = join(absDir, "台本.md");
+const scriptDir = join(absDir, "script");
 
 if (existsSync(dataPath)) {
   console.log(`✓ slide-data.json は既に存在します: ${dataPath}`);
@@ -32,10 +32,22 @@ if (existsSync(dataPath)) {
   process.exit(0);
 }
 
-if (!existsSync(scriptPath)) {
-  console.error(`❌ 台本.md が見つかりません: ${scriptPath}`);
+if (!existsSync(scriptDir)) {
+  console.error(`❌ script フォルダが見つかりません: ${scriptDir}`);
   process.exit(1);
 }
+
+// script/ フォルダ内の最初のテキストファイルを台本として使う（.md/.txt/その他OK）
+const files = readdirSync(scriptDir)
+  .filter(f => !f.startsWith(".") && statSync(join(scriptDir, f)).isFile());
+
+if (files.length === 0) {
+  console.error(`❌ script フォルダが空です: ${scriptDir}`);
+  process.exit(1);
+}
+
+const scriptPath = join(scriptDir, files[0]);
+console.log(`📄 台本ファイル: ${scriptPath}`);
 
 // 最小限のフォールバック：台本の # 見出しから title スライド 1枚だけ作る
 const script = readFileSync(scriptPath, "utf-8");
