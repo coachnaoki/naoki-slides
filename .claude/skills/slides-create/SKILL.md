@@ -32,11 +32,32 @@ Step 6. ユーザーOKなら GAS経由でGoogle Slideに反映（tools/post-to-g
 
 ### 1-A. ライセンス認証
 
+**認証フロー（順に試す・自動化可能な部分は自動でやる）**
+
 ```bash
+# Step 1: まず通常チェック
 node tools/_chk.mjs
 ```
 
-exit code が 0 以外なら即中止して「ライセンスが無効です」と伝える。
+exit 0 → OK。次へ。
+
+exit 非0 の場合は以下を順に試す：
+
+```bash
+# Step 2: naoki-blueprint から自動コピーを試みる
+node tools/find-license.mjs
+
+# Step 3: コピー成功したら再度チェック
+node tools/_chk.mjs
+```
+
+それでも失敗する場合はユーザーに「naoki-blueprintのライセンスIDを教えてください（例: NK-XXXX-XXXX-XXXX）」と聞き、以下を実行：
+
+```bash
+node tools/validateLicense.mjs NK-XXXX-XXXX-XXXX
+```
+
+最終的にも失敗したら「ライセンスが無効です。権利者にお問い合わせください」と伝えてスキルを中止する。
 
 ### 1-B. .env の設定確認
 

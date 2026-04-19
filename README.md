@@ -32,16 +32,23 @@ npm install
 
 **naoki-blueprint で発行されたライセンスID** を使います（新規IDは発行されません）。
 
+#### 🚀 おすすめ: naoki-blueprint の認証を自動で引き継ぐ
+
+naoki-blueprint で既に認証済みなら、**IDを打ち直さずに自動コピー**できます：
+
+```bash
+node tools/find-license.mjs
+```
+
+→ 同じPCで `naoki-blueprint/.license` が見つかれば自動コピー。IDは打たなくてOK。
+
+#### 手動で認証する場合
+
 ```bash
 node tools/validateLicense.mjs NK-XXXX-XXXX-XXXX
 ```
 
 認証に成功すると `✓ {あなたの名前} さん、認証済みです` と表示されます。
-
-> 💡 ヒント: naoki-blueprint フォルダに `.license` ファイルが既に存在する場合、それを naoki-slides フォルダにコピーすれば認証ステップをスキップできます（同じPC前提）:
-> ```bash
-> cp ../naoki-blueprint/.license .
-> ```
 
 ### 3. セットアップスクリプトを実行
 
