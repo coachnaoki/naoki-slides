@@ -4,10 +4,10 @@
 
 ## ライセンス認証（最優先）
 
-**すべてのスキル実行前に、必ず `node scripts/validateLicense.mjs` を実行してライセンス認証を行うこと。**
+**すべてのスキル実行前に、必ず `node tools/validateLicense.mjs` を実行してライセンス認証を行うこと。**
 
-1. **毎回** `node scripts/validateLicense.mjs` を実行する（`.license` ファイルの有無に関わらず）
-2. **`.license` が存在しない場合**: ユーザーにライセンスIDの入力を求め、`node scripts/validateLicense.mjs <ID>` を実行する
+1. **毎回** `node tools/validateLicense.mjs` を実行する（`.license` ファイルの有無に関わらず）
+2. **`.license` が存在しない場合**: ユーザーにライセンスIDの入力を求め、`node tools/validateLicense.mjs <ID>` を実行する
 3. **認証失敗した場合（期限切れ・無効化・別PC）**: スキルの実行を中止し、「ライセンスIDが無効です。発行元に確認してください」と伝える
 4. **認証成功した場合**: 「✅ {name} さん、認証済みです」と表示して続行する
 
@@ -94,7 +94,7 @@ naoki-slides/
 ├── .template-project/              # 新規プレゼンの雛形
 │   └── script/台本.md
 ├── templates/slides.html           # 17テンプレート本体（gas-slides由来）
-├── scripts/
+├── tools/                          # Node/JSユーティリティ（台本フォルダ script/ とは別）
 │   ├── validateLicense.mjs         # ライセンス認証
 │   ├── _chk.mjs                    # ライセンスガード
 │   ├── generate-slide-data.mjs     # 台本→JSON構造化

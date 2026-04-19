@@ -7,7 +7,7 @@
  * 本来の解析・テンプレート選定は Claude Code（/slides-create スキル）が行う。
  *
  * 使い方:
- *   node scripts/generate-slide-data.mjs <presentation-dir>
+ *   node tools/generate-slide-data.mjs <presentation-dir>
  *
  * 動作:
  *   - <presentation-dir>/slide-data.json が既に存在する → 何もせず終了（Claudeが作ったものを尊重）
@@ -18,7 +18,7 @@ import { resolve, join } from "path";
 
 const presentationDir = process.argv[2];
 if (!presentationDir) {
-  console.error("Usage: node scripts/generate-slide-data.mjs <presentation-dir>");
+  console.error("Usage: node tools/generate-slide-data.mjs <presentation-dir>");
   process.exit(1);
 }
 

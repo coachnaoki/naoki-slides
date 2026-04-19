@@ -3,7 +3,7 @@
  * 生成済み slide_*.png を 1列縦並びの preview.html にまとめ、ブラウザで自動オープン。
  *
  * 使い方:
- *   node scripts/generate-preview.mjs <presentation-dir>
+ *   node tools/generate-preview.mjs <presentation-dir>
  *
  * 出力: <presentation-dir>/preview.html
  */
@@ -14,7 +14,7 @@ import { platform } from "os";
 
 const presentationDir = process.argv[2];
 if (!presentationDir) {
-  console.error("Usage: node scripts/generate-preview.mjs <presentation-dir>");
+  console.error("Usage: node tools/generate-preview.mjs <presentation-dir>");
   process.exit(1);
 }
 

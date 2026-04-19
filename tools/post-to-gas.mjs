@@ -3,7 +3,7 @@
  * 生成したスライド画像をGAS Webhookへ送信し、指定Google Slideに貼り付ける。
  *
  * 使い方:
- *   node scripts/post-to-gas.mjs <presentation-dir>
+ *   node tools/post-to-gas.mjs <presentation-dir>
  *
  * 前提:
  *   - <presentation-dir>/output/slide_001.png ... が存在すること
@@ -24,7 +24,7 @@ dotenv.config({ path: join(ROOT, ".env") });
 
 const presentationDir = process.argv[2];
 if (!presentationDir) {
-  console.error("Usage: node scripts/post-to-gas.mjs <presentation-dir>");
+  console.error("Usage: node tools/post-to-gas.mjs <presentation-dir>");
   process.exit(1);
 }
 

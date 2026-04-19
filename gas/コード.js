@@ -1,7 +1,7 @@
 /**
  * naoki-slides — Google Slides 書き込みGAS
  *
- * naoki-slides/scripts/post-to-gas.mjs から Base64画像の配列を受け取り、
+ * naoki-slides/tools/post-to-gas.mjs から Base64画像の配列を受け取り、
  * 指定された Google Slide の全スライドを削除 → 画像を1枚ずつページに貼り付ける。
  *
  * デプロイ方法:

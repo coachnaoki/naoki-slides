@@ -33,7 +33,7 @@ npm install
 **naoki-blueprint で発行されたライセンスID** を使います（新規IDは発行されません）。
 
 ```bash
-node scripts/validateLicense.mjs NK-XXXX-XXXX-XXXX
+node tools/validateLicense.mjs NK-XXXX-XXXX-XXXX
 ```
 
 認証に成功すると `✓ {あなたの名前} さん、認証済みです` と表示されます。
@@ -119,7 +119,7 @@ naoki-slides/
 ├── .template-project/              # 新規プレゼンの雛形
 │   └── script/台本.md
 ├── templates/slides.html           # 17種テンプレ（gas-slides由来）
-├── scripts/                        # 台本解析・画像化・GAS送信
+├── tools/                          # Node/JSユーティリティ（script/と別物）
 ├── gas/                            # GAS本体（参考・生徒はテンプレコピーで取得）
 ├── projects/                       # あなたのプレゼン（gitignore）
 │   └── {プレゼン名}/

@@ -3,7 +3,7 @@
  * スライドJSONを slides.html に注入して Puppeteer で全スライドを画像化する。
  *
  * 使い方:
- *   node scripts/screenshot-slides.mjs <presentation-dir>
+ *   node tools/screenshot-slides.mjs <presentation-dir>
  *
  * 入力:  <presentation-dir>/slide-data.json
  * 出力:  <presentation-dir>/output/slide_001.png ...
@@ -21,7 +21,7 @@ const TEMPLATE_PATH = join(ROOT, "templates", "slides.html");
 
 const presentationDir = process.argv[2];
 if (!presentationDir) {
-  console.error("Usage: node scripts/screenshot-slides.mjs <presentation-dir>");
+  console.error("Usage: node tools/screenshot-slides.mjs <presentation-dir>");
   process.exit(1);
 }
 
