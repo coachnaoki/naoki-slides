@@ -194,6 +194,17 @@
 
 **⚠ 注意:** `icon` を省略すると左の円が空になる。
 
+**💡 Tip: 短い1行を大きく見せたい時**
+
+steps が3つ以上だと `content` は自動で `text-4xl`（2.25rem）に縮小される。内容が短くて1行に収まる場合、インライン span で font-size を上書きして強調できる。
+
+```json
+{ "num": 1, "style": "highlight", "icon": "fa-bolt", "label": "インパクト瞬間",
+  "content": "<span style='font-size:3.5rem'>スプリットステップ</span>" }
+```
+
+目安：`3rem`（控えめ）〜 `4rem`（強調）。全ステップで統一しないとバランスが崩れるので、使うなら全ステップに同じサイズを適用する。
+
 ---
 
 ## 8. big-message
