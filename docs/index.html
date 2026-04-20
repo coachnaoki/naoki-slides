@@ -256,18 +256,7 @@ cd naoki-slides</code></pre>
 
 <!-- Step 2 -->
 <div class="card">
-  <h2><span class="step-number">2</span> Claude Code を立ち上げる</h2>
-
-  <p>ここからは Claude Code に任せます。先に起動しておけば、<strong>セットアップで詰まったときも Claude が代わりに解決</strong>してくれます。</p>
-
-  <pre><code>claude --dangerously-skip-permissions</code></pre>
-
-  <div class="note">初回起動時にログインを求められた場合は、画面の指示に従ってブラウザで認証してください。</div>
-</div>
-
-<!-- Step 3 -->
-<div class="card">
-  <h2><span class="step-number">3</span> 初回セットアップ（Google Slide + GAS）</h2>
+  <h2><span class="step-number">2</span> 初回セットアップ（Google Slide + GAS）</h2>
 
   <p>初回だけ、自分の Drive に Slide テンプレと GAS スクリプトをコピーします。Cursor のターミナルで以下を実行：</p>
 
@@ -275,16 +264,16 @@ cd naoki-slides</code></pre>
 
   <p>対話形式で以下を案内されます：</p>
 
-  <h3>Step 3-1. Slide テンプレを自分の Drive にコピー</h3>
+  <h3>Step 2-1. Slide テンプレを自分の Drive にコピー</h3>
   <ol>
     <li>表示されたリンクを開く → <strong>「コピーを作成」</strong> を押す（自分の Drive に Slide + GAS が一緒にコピーされる）</li>
     <li>コピー後に開いた Slide の URL をコピー</li>
     <li>ターミナルに URL を貼り付けて Enter</li>
   </ol>
 
-  <h3>Step 3-2. GAS をデプロイして URL を取得</h3>
+  <h3>Step 2-2. GAS をデプロイして URL を取得</h3>
   <ol>
-    <li>Step 3-1 でコピーした Slide の上部メニュー <strong>「拡張機能」→「Apps Script」</strong></li>
+    <li>Step 2-1 でコピーした Slide の上部メニュー <strong>「拡張機能」→「Apps Script」</strong></li>
     <li>画面右上の <strong>「デプロイ」→「新しいデプロイ」</strong></li>
     <li>歯車アイコン → <strong>「ウェブアプリ」</strong> を選択</li>
     <li>次のユーザーとして実行: <strong>「自分」</strong></li>
@@ -296,7 +285,18 @@ cd naoki-slides</code></pre>
   </ol>
 
   <div class="note"><strong>なぜ「全員」？</strong> Claude がリクエストを送るため。URL は推測困難なので、セキュリティ上は問題ありません。</div>
-  <div class="note">完了すると <code>.env</code> が自動生成されます。エラーが出たら Claude のタブに戻って聞けば解決してくれます。</div>
+  <div class="note">完了すると <code>.env</code> が自動生成されます。詰まったら次のステップで Claude Code を起動して聞いてください。</div>
+</div>
+
+<!-- Step 3 -->
+<div class="card">
+  <h2><span class="step-number">3</span> Claude Code を立ち上げる</h2>
+
+  <p>ここから先は Claude Code に任せます。ライセンス認証・台本解析・スライド生成まで自動でやってくれます。</p>
+
+  <pre><code>claude --dangerously-skip-permissions</code></pre>
+
+  <div class="note">初回起動時にログインを求められた場合は、画面の指示に従ってブラウザで認証してください。</div>
 </div>
 
 <!-- Step 4 -->
