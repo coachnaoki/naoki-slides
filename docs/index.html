@@ -245,115 +245,110 @@
 
   <div class="warning"><strong>⚠ 事前準備:</strong> すでに Claude Code を開いている方は、ターミナル上で <strong>Ctrl+C</strong>（Mac は <strong>Control+C</strong>）を <strong>2回押して</strong>終了してから進めてください。</div>
 
-  <p>Cursor のターミナルで、<code>naoki-slides</code> を置きたいフォルダに移動します（naoki-blueprint と同じ階層に置くのが推奨・自動でライセンスを引き継ぎできます）。</p>
+  <p>Cursor のターミナルを開き、<code>naoki-slides</code> を置きたいフォルダに移動します（naoki-blueprint と同じ階層に置くとライセンスを自動で引き継げます）。</p>
 
-  <h3>Mac の場合</h3>
-  <pre><code>cd ~/Desktop/Cursor</code></pre>
+  <pre><code>cd ~/Desktop/Cursor
+git clone https://github.com/coachnaoki/naoki-slides.git
+cd naoki-slides</code></pre>
 
-  <h3>Windows (PowerShell) の場合</h3>
-  <pre><code>cd ~\Desktop\Cursor</code></pre>
-
-  <hr>
-
-  <p>そのフォルダでリポジトリをダウンロード（Mac / Windows 共通）:</p>
-  <pre><code>git clone https://github.com/coachnaoki/naoki-slides.git
-cd naoki-slides
-npm install</code></pre>
+  <div class="note">以降のコマンドは <strong>Mac / Windows 共通</strong>です。Cursor のターミナルで、そのままコピペして実行してください。</div>
 </div>
 
 <!-- Step 2 -->
 <div class="card">
-  <h2><span class="step-number">2</span> ライセンス認証</h2>
-  <p><strong>naoki-blueprint で発行されたライセンスID</strong> をそのまま使います（新規 ID は発行されません）。</p>
+  <h2><span class="step-number">2</span> Claude Code を立ち上げる</h2>
 
-  <h3>🚀 おすすめ: naoki-blueprint から自動コピー</h3>
-  <p>naoki-blueprint で既に認証済みなら、<strong>ID を打ち直さずに自動コピー</strong>できます：</p>
-  <pre><code>node tools/find-license.mjs</code></pre>
-  <p>同じ PC で <code>naoki-blueprint/.license</code> が見つかれば自動コピー。ID は打たなくて OK。</p>
+  <p>ここからは Claude Code に任せます。先に起動しておけば、<strong>セットアップで詰まったときも Claude が代わりに解決</strong>してくれます。</p>
 
-  <h3>手動で認証する場合</h3>
-  <pre><code>node tools/validateLicense.mjs NK-XXXX-XXXX-XXXX</code></pre>
-  <p>認証に成功すると <code>✓ {あなたの名前} さん、認証済みです</code> と表示されます。</p>
+  <pre><code>claude --dangerously-skip-permissions</code></pre>
 
-  <div class="note">PC を変更する場合は Chatwork で Naoki に個別メッセージしてください。</div>
+  <div class="note">初回起動時にログインを求められた場合は、画面の指示に従ってブラウザで認証してください。</div>
 </div>
 
 <!-- Step 3 -->
 <div class="card">
-  <h2><span class="step-number">3</span> セットアップスクリプトを実行</h2>
-  <p>Google Slide テンプレと GAS（書き込み用スクリプト）を自分の Drive にセットアップします。</p>
+  <h2><span class="step-number">3</span> スキルを起動</h2>
 
-  <h3>Mac の場合</h3>
-  <pre><code>./セットアップ.sh</code></pre>
+  <p>Claude Code が起動したら、以下を入力します。</p>
 
-  <h3>Windows (PowerShell) の場合</h3>
+  <pre><code>/slides-create</code></pre>
+
+  <p>スキルが自動で以下をチェック・実行してくれます：</p>
+  <ul>
+    <li><strong>依存パッケージのインストール</strong>（<code>npm install</code>）</li>
+    <li><strong>ライセンス認証</strong>（naoki-blueprint から自動コピー。失敗時は ID 入力を案内）</li>
+    <li><strong>.env の有無確認</strong>（未設定なら Step 4 を案内）</li>
+    <li><strong>プレゼンフォルダの確認</strong>（未作成なら Step 5 を案内）</li>
+  </ul>
+
+  <div class="note">生徒側で手動で叩くべきコマンドは <strong>ほぼゼロ</strong>。エラーが出ても Claude がその場で対処します。</div>
+</div>
+
+<!-- Step 4 -->
+<div class="card">
+  <h2><span class="step-number">4</span> 初回セットアップ（Google Slide + GAS）</h2>
+
+  <p>Claude から「セットアップが未完了です」と案内されたら、以下を実行します。これは<strong>初回のみ</strong>です。</p>
+
   <pre><code>bash セットアップ.sh</code></pre>
 
-  <p>対話形式で以下を順番に案内されます：</p>
+  <p>対話形式で以下を案内されます：</p>
 
-  <h3>Step 3-1. Slide テンプレを自分の Drive にコピー</h3>
+  <h3>Step 4-1. Slide テンプレを自分の Drive にコピー</h3>
   <ol>
-    <li>画面に表示されたリンクを開く（「コピーを作成」ボタンが自動で表示）</li>
-    <li><strong>「コピーを作成」</strong> を押す → 自分の Drive に Slide + GAS スクリプトが一緒にコピーされる</li>
-    <li>コピー後に開いた Slide の URL をそのままコピー</li>
+    <li>表示されたリンクを開く → <strong>「コピーを作成」</strong> を押す（自分の Drive に Slide + GAS が一緒にコピーされる）</li>
+    <li>コピー後に開いた Slide の URL をコピー</li>
     <li>ターミナルに URL を貼り付けて Enter</li>
   </ol>
 
-  <h3>Step 3-2. GAS をデプロイして URL を取得</h3>
+  <h3>Step 4-2. GAS をデプロイして URL を取得</h3>
   <ol>
-    <li>Step 3-1 でコピーした Slide を開いたまま、上部メニュー <strong>「拡張機能」→「Apps Script」</strong> をクリック → 新しいタブでスクリプトエディタが開く</li>
+    <li>Step 4-1 でコピーした Slide の上部メニュー <strong>「拡張機能」→「Apps Script」</strong></li>
     <li>画面右上の <strong>「デプロイ」→「新しいデプロイ」</strong></li>
     <li>歯車アイコン → <strong>「ウェブアプリ」</strong> を選択</li>
     <li>次のユーザーとして実行: <strong>「自分」</strong></li>
-    <li>アクセスできるユーザー: <strong>「全員」</strong>（「自分のみ」だと CLI から叩けません）</li>
+    <li>アクセスできるユーザー: <strong>「全員」</strong>（「自分のみ」だと動きません）</li>
     <li><strong>「デプロイ」</strong> を押す</li>
     <li>初回は承認ダイアログ：<strong>「詳細」→「{プロジェクト名}（安全ではないページ）に移動」→ 許可</strong></li>
     <li>表示された <strong>「ウェブアプリ URL」</strong> をコピー</li>
     <li>ターミナルに URL を貼り付けて Enter</li>
   </ol>
 
-  <div class="note"><strong>なぜ「全員」？</strong> CLI からリクエストを送るため。URL は推測困難なので、セキュリティ上は問題ありません。</div>
-  <div class="note">完了すると <code>.env</code> が自動生成されます。以降は触らなくて OK。</div>
-</div>
-
-<!-- Step 4 -->
-<div class="card">
-  <h2><span class="step-number">4</span> 新規プレゼンを作成</h2>
-  <p>ここから毎回の作業。プレゼン1本ごとに専用フォルダを作ります。</p>
-
-  <h3>Mac の場合</h3>
-  <pre><code>./新規スライド.sh</code></pre>
-
-  <h3>Windows (PowerShell) の場合</h3>
-  <pre><code>bash 新規スライド.sh</code></pre>
-
-  <p>プレゼン名を聞かれるので入力（例: <code>tennis-camp-2026</code>）。<br>
-  → <code>projects/tennis-camp-2026/script/台本.md</code> が作られ、<strong>自動でエディタで開きます</strong>。</p>
+  <div class="note"><strong>なぜ「全員」？</strong> Claude がリクエストを送るため。URL は推測困難なので、セキュリティ上は問題ありません。</div>
+  <div class="note">完了すると <code>.env</code> が自動生成されます。Claude のタブに戻って作業を続けてください。</div>
 </div>
 
 <!-- Step 5 -->
 <div class="card">
-  <h2><span class="step-number">5</span> 台本を書く</h2>
-  <p>開かれた <code>script/台本.md</code> に自由に書きます。<strong>話し言葉・箇条書き・見出し混在でOK</strong>。</p>
-  <p><strong>ファイル形式は自由</strong>：<code>.md</code> じゃなくても <code>.txt</code> や他の拡張子でも動きます。<code>script/</code> フォルダに台本ファイルが1つ入っていればOK。</p>
+  <h2><span class="step-number">5</span> プレゼンを作成して台本を書く</h2>
 
-  <div class="note">Claudeが台本を解析 → 17種類のテンプレート（タイトル／3カード／ステップ／対比／統計 等）から最適なものを自動選択してスライド化します。</div>
+  <p>Claude に「新しいプレゼンを作りたい」と伝えるか、以下のコマンドを実行します。</p>
+
+  <pre><code>bash 新規スライド.sh</code></pre>
+
+  <p>プレゼン名を聞かれるので入力（例: <code>tennis-camp-2026</code>）。<br>
+  → <code>projects/tennis-camp-2026/script/台本.md</code> が作られ、<strong>自動でエディタで開きます</strong>。</p>
+
+  <p>開かれた <code>台本.md</code> に自由に書いてください：</p>
+  <ul>
+    <li>話し言葉・箇条書き・見出し混在でOK</li>
+    <li>ファイル形式は自由（<code>.md</code> / <code>.txt</code> / 他）</li>
+    <li>Claudeが17種のテンプレから最適なものを自動選択</li>
+  </ul>
 </div>
 
 <!-- Step 6 -->
 <div class="card">
-  <h2><span class="step-number">6</span> Claude Code でスキル起動</h2>
-  <p>プレゼンフォルダに移動して Claude Code を起動：</p>
-  <pre><code>cd projects/tennis-camp-2026
-claude --dangerously-skip-permissions</code></pre>
+  <h2><span class="step-number">6</span> スライドを生成する</h2>
 
-  <p>Claude Code が立ち上がったら、以下を入力：</p>
+  <p>Claude のタブに戻って、以下を入力：</p>
+
   <pre><code>/slides-create</code></pre>
 
   <p>自動で以下の流れが走ります：</p>
   <ol>
     <li>台本を解析してスライド構成を設計</li>
-    <li>構成案を提示 → あなたが OK と言うまで JSON 確定しない</li>
+    <li>構成案を提示 → <strong>あなたが OK と言うまで JSON 確定しない</strong></li>
     <li>Puppeteer で画像化（1280×720 PNG × N枚）</li>
     <li>プレビューをブラウザで自動表示 → 目視確認</li>
     <li>OK なら GAS 経由で Google Slide に反映</li>
@@ -369,12 +364,7 @@ claude --dangerously-skip-permissions</code></pre>
   <p>テンプレートが更新されたら、以下のコマンドで最新版に置き換えできます。<br>
   <strong>あなたが作った <code>projects/</code> と <code>.license</code> / <code>.env</code> は上書きされず安全です。</strong></p>
 
-  <h3>Mac の場合</h3>
   <pre><code>cd ~/Desktop/Cursor/naoki-slides
-./アップデート.sh</code></pre>
-
-  <h3>Windows (PowerShell) の場合</h3>
-  <pre><code>cd ~\Desktop\Cursor\naoki-slides
 bash アップデート.sh</code></pre>
 </div>
 
