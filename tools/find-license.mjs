@@ -8,12 +8,13 @@
  * 使い方:
  *   node tools/find-license.mjs
  *
- * 動作:
- *   - .license が既にある → 何もせず終了
- *   - naoki-blueprint/.license が見つかり、fingerprint一致 → コピーして成功
- *   - 見つからない or fingerprint不一致 → エラーで終了（exit 1）
+ * 探索範囲（naoki-blueprint の直下 / テンプレ / projects 配下すべて）:
+ *   - naoki-blueprint/.license
+ *   - naoki-blueprint/.template/.license
+ *   - naoki-blueprint/.template-shorts/.license
+ *   - naoki-blueprint/projects/*\/.license
  */
-import { existsSync, copyFileSync, readFileSync } from "fs";
+import { existsSync, copyFileSync, readFileSync, readdirSync } from "fs";
 import { homedir, hostname, userInfo, platform, arch } from "os";
 import { dirname, resolve, join } from "path";
 import { fileURLToPath } from "url";
@@ -34,16 +35,40 @@ const getFingerprint = () => {
   return createHash("sha256").update(r).digest("hex").slice(0, 16);
 };
 
-// 探索候補パス（naoki-slides との位置関係を複数想定）
-const candidates = [
+// naoki-blueprint 本体の候補ベースパス（naoki-slides との位置関係を複数想定）
+const baseDirs = [
   // 兄弟ディレクトリ
-  resolve(ROOT, "..", "naoki-blueprint", ".license"),
+  resolve(ROOT, "..", "naoki-blueprint"),
   // よくある絶対パス
-  join(homedir(), "Desktop", "7_AI", "Cursor", "naoki-blueprint", ".license"),
-  join(homedir(), "Desktop", "Cursor", "naoki-blueprint", ".license"),
-  join(homedir(), "Cursor", "naoki-blueprint", ".license"),
-  join(homedir(), "naoki-blueprint", ".license"),
+  join(homedir(), "Desktop", "7_AI", "Cursor", "naoki-blueprint"),
+  join(homedir(), "Desktop", "Cursor", "naoki-blueprint"),
+  join(homedir(), "Cursor", "naoki-blueprint"),
+  join(homedir(), "naoki-blueprint"),
 ];
+
+// 各ベースで .license を探す候補を組み立てる
+const candidates = [];
+for (const base of baseDirs) {
+  // 直下（初回認証を本体で行っていたケース）
+  candidates.push(join(base, ".license"));
+  // テンプレ直下（validateLicense.mjs を .template 配下で叩いた場合）
+  candidates.push(join(base, ".template", ".license"));
+  candidates.push(join(base, ".template-shorts", ".license"));
+  // projects/ 配下（新規作成.sh で .license ごとコピーされた各動画プロジェクト）
+  const projectsDir = join(base, "projects");
+  if (existsSync(projectsDir)) {
+    try {
+      const entries = readdirSync(projectsDir, { withFileTypes: true });
+      for (const entry of entries) {
+        if (entry.isDirectory()) {
+          candidates.push(join(projectsDir, entry.name, ".license"));
+        }
+      }
+    } catch {
+      // 読めないディレクトリは無視
+    }
+  }
+}
 
 const currentFp = getFingerprint();
 
