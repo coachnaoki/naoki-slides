@@ -290,18 +290,7 @@ cd naoki-slides</code></pre>
 
 <!-- Step 3 -->
 <div class="card">
-  <h2><span class="step-number">3</span> Claude Code を立ち上げる</h2>
-
-  <p>ここから先は Claude Code に任せます。ライセンス認証・台本解析・スライド生成まで自動でやってくれます。</p>
-
-  <pre><code>claude --dangerously-skip-permissions</code></pre>
-
-  <div class="note">初回起動時にログインを求められた場合は、画面の指示に従ってブラウザで認証してください。</div>
-</div>
-
-<!-- Step 4 -->
-<div class="card">
-  <h2><span class="step-number">4</span> プレゼンを作成して台本を書く</h2>
+  <h2><span class="step-number">3</span> プレゼンを作成して台本を書く</h2>
 
   <p>ターミナルで以下を実行：</p>
 
@@ -318,11 +307,24 @@ cd naoki-slides</code></pre>
   </ul>
 </div>
 
+<!-- Step 4 -->
+<div class="card">
+  <h2><span class="step-number">4</span> Claude Code を立ち上げる</h2>
+
+  <p>作成したプレゼンフォルダに移動してから Claude Code を起動します。<strong>この順番が重要</strong>（ルートで先に起動すると cwd がズレてスキルが動きません）。</p>
+
+  <pre><code>cd projects/tennis-camp-2026
+claude --dangerously-skip-permissions</code></pre>
+
+  <div class="note"><code>tennis-camp-2026</code> の部分は Step 3 で付けたプレゼン名に置き換えてください。</div>
+  <div class="note">初回起動時にログインを求められた場合は、画面の指示に従ってブラウザで認証してください。</div>
+</div>
+
 <!-- Step 5 -->
 <div class="card">
   <h2><span class="step-number">5</span> スライドを生成する</h2>
 
-  <p>Claude のタブに戻って、以下を入力：</p>
+  <p>Step 4 で立ち上げた Claude Code にそのまま以下を入力：</p>
 
   <pre><code>/slides-create</code></pre>
 
