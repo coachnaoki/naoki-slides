@@ -17,7 +17,7 @@ import puppeteer from "puppeteer";
 
 const __dirname = dirname(fileURLToPath(import.meta.url));
 const ROOT = resolve(__dirname, "..");
-const TEMPLATE_PATH = join(ROOT, "templates", "slides.html");
+const DEFAULT_TEMPLATE_PATH = join(ROOT, "templates", "slides.html");
 
 const presentationDir = process.argv[2];
 if (!presentationDir) {
@@ -28,6 +28,12 @@ if (!presentationDir) {
 const absDir = resolve(presentationDir);
 const dataPath = join(absDir, "slide-data.json");
 const outputDir = join(absDir, "output");
+
+const localTemplate = join(absDir, "slides.html");
+const TEMPLATE_PATH = existsSync(localTemplate) ? localTemplate : DEFAULT_TEMPLATE_PATH;
+if (TEMPLATE_PATH === localTemplate) {
+  console.log(`🎨 プロジェクト固有テンプレを使用: ${localTemplate}`);
+}
 
 if (!existsSync(dataPath)) {
   console.error(`❌ slide-data.json が見つかりません: ${dataPath}`);
