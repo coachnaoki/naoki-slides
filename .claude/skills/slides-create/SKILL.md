@@ -62,13 +62,15 @@ node tools/validateLicense.mjs NK-XXXX-XXXX-XXXX
 ### 1-B. .env の設定確認
 
 ```bash
-[ -f .env ] && grep -q "GAS_WEBHOOK_URL" .env && grep -q "TEMPLATE_SLIDE_ID" .env && echo "OK" || echo "NG"
+[ -f .env ] && grep -q "GAS_WEBHOOK_URL" .env && grep -qE "^(TEMPLATE_SLIDE_ID|GOOGLE_SLIDE_ID)=" .env && echo "OK" || echo "NG"
 ```
 
 `NG` の場合、ユーザーに以下を伝える：
 
 > `.env` ファイルが未設定、またはキーが足りません。
 > `bash セットアップ.sh` を実行して生成してください。
+
+**旧キー `GOOGLE_SLIDE_ID` は引き続き動作する**（互換性維持）。ただし新機能「プレゼン毎に独立Slide」を有効にするには `TEMPLATE_SLIDE_ID` へのリネームを推奨。
 
 ### 1-C. プレゼンフォルダの特定（新規作成も可）
 

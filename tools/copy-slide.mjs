@@ -30,8 +30,10 @@ if (!presentationDir) {
   process.exit(1);
 }
 
-const { GAS_WEBHOOK_URL, TEMPLATE_SLIDE_ID } = process.env;
-if (!GAS_WEBHOOK_URL || !TEMPLATE_SLIDE_ID) {
+const { GAS_WEBHOOK_URL } = process.env;
+// TEMPLATE_SLIDE_ID (新) を優先。旧キー GOOGLE_SLIDE_ID もfallbackで受ける。
+const TEMPLATE_ID = process.env.TEMPLATE_SLIDE_ID || process.env.GOOGLE_SLIDE_ID;
+if (!GAS_WEBHOOK_URL || !TEMPLATE_ID) {
   console.error("❌ .env に GAS_WEBHOOK_URL と TEMPLATE_SLIDE_ID を設定してください。");
   console.error("   bash セットアップ.sh を実行して生成してください。");
   process.exit(1);
@@ -52,7 +54,7 @@ try {
     headers: { "Content-Type": "application/json" },
     body: JSON.stringify({
       action: "copy",
-      templateId: TEMPLATE_SLIDE_ID,
+      templateId: TEMPLATE_ID,
       newTitle,
     }),
   });
@@ -71,7 +73,7 @@ try {
     url: json.url,
     title: json.title,
     createdAt: new Date().toISOString(),
-    templateId: TEMPLATE_SLIDE_ID,
+    templateId: TEMPLATE_ID,
   };
 
   const metaPath = join(absDir, "slide-meta.json");

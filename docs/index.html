@@ -296,65 +296,9 @@
 
 <!-- Step 3 -->
 <div class="card">
-  <h2><span class="step-number">3</span> プレゼンを作成して台本を書く</h2>
+  <h2><span class="step-number">3</span> Claude Code を起動して <code>/slides-create</code></h2>
 
-  <p>ターミナルで以下を実行：</p>
-
-  <pre><code>bash 新規スライド.sh</code></pre>
-
-  <p>プレゼン名を聞かれるので入力（例: <code>tennis-camp-2026</code>）。<br>
-  → <code>projects/tennis-camp-2026/script/台本.md</code> が作られます。</p>
-
-  <p>Cursor のエディタで <code>台本.md</code> を開き、<strong>動画や記事の台本をそのまま貼り付ける</strong>だけで OK。</p>
-  <ul>
-    <li>構成や見出しは<strong>考えなくて大丈夫</strong>（Claudeが自動で整えます）</li>
-    <li>話し言葉・箇条書き・混在でもOK</li>
-    <li>ファイル形式は自由（<code>.md</code> / <code>.txt</code> / 他）</li>
-  </ul>
-</div>
-
-<!-- Step 4 -->
-<div class="card">
-  <h2><span class="step-number">4</span> Claude Code を立ち上げる</h2>
-
-  <p>作成したプレゼンフォルダに移動してから Claude Code を起動します。<strong>この順番が重要</strong>（ルートで先に起動すると cwd がズレてスキルが動きません）。</p>
-
-  <p style="font-size: 13px; color: #666; margin: 8px 0 4px;">① プレゼンフォルダに移動（<code>tennis-camp-2026</code> は Step 3 で付けたプレゼン名に置き換えてください）</p>
-  <pre><code>cd projects/tennis-camp-2026</code></pre>
-
-  <p style="font-size: 13px; color: #666; margin: 12px 0 4px;">② Claude Code を起動</p>
-  <pre><code>claude --dangerously-skip-permissions</code></pre>
-  <div class="note">初回起動時にログインを求められた場合は、画面の指示に従ってブラウザで認証してください。</div>
-</div>
-
-<!-- Step 5 -->
-<div class="card">
-  <h2><span class="step-number">5</span> スライドを生成する</h2>
-
-  <p>Step 4 で立ち上げた Claude Code にそのまま以下を入力：</p>
-
-  <pre><code>/slides-create</code></pre>
-
-  <p>スキルが自動で以下をすべて実行してくれます：</p>
-  <ol>
-    <li><strong>依存パッケージのインストール</strong>（<code>npm install</code>）</li>
-    <li><strong>ライセンス認証</strong>（naoki-blueprint から自動コピー）</li>
-    <li>台本を解析してスライド構成を設計</li>
-    <li>構成案を提示 → <strong>あなたが OK と言うまで JSON 確定しない</strong></li>
-    <li>Puppeteer で画像化（1280×720 PNG × N枚）</li>
-    <li>プレビューをブラウザで自動表示 → 目視確認</li>
-    <li>OK なら GAS 経由で Google Slide に反映</li>
-    <li>完成 URL が返ってくる → ブラウザで開いて確認</li>
-  </ol>
-
-  <div class="note">約1分で完成。編集したい場合は <code>script/</code> 内の台本を修正して <code>/slides-create</code> を再実行してください。</div>
-</div>
-
-<!-- 2回目以降 -->
-<div class="card" style="border-left: 4px solid #22c55e;">
-  <h2>2回目以降（新しいプレゼンを作るとき）</h2>
-  <p>Step 1（ダウンロード）と Step 2（Google Slide + GAS）は<strong>初回だけ</strong>でOK。<br>
-  2回目以降は <code>/slides-create</code> が<strong>プレゼン作成からスライド生成まで全部やってくれます</strong>。</p>
+  <p>ここから先は <strong>Claude Code が全部やってくれます</strong>（プレゼンフォルダ作成・Google Slide作成・台本保存場所の準備・スライド設計・生成・反映）。</p>
 
   <p style="font-size: 13px; color: #666; margin: 12px 0 4px;">① naoki-slides ディレクトリに移動（<code>~/Desktop/Cursor</code> は clone 先に合わせて読み替え）</p>
   <pre><code>cd ~/Desktop/Cursor/naoki-slides</code></pre>
@@ -374,8 +318,39 @@
     <li>チャットに<strong>「続けて」</strong>と入力 → そのままスライド設計・生成・反映まで自動進行</li>
   </ol>
 
-  <div class="note">⚠ <strong>過去のプレゼンは上書きされません。</strong> 新規作成ごとに独立した Google Slide が自動で生成されます（Step 1 で作ったSlideはテンプレ専用）。</div>
-  <div class="note">ライセンス認証・<code>.env</code> 設定は初回に済んでいるので、そのまま使えます。</div>
+  <div class="note" style="background:#dcfce7;border-color:#22c55e;">🔁 <strong>2回目以降</strong>は Step 1（ダウンロード）と Step 2（Slide + GAS）をスキップして、この Step 3 から始めればOKです。</div>
+  <div class="note">⚠ <strong>過去のプレゼンは上書きされません。</strong> 新規作成ごとに独立した Google Slide が自動で生成されます（Step 2 で作ったSlideはテンプレ専用）。</div>
+  <div class="note">初回起動時に Claude Code のログインを求められた場合は、画面の指示に従ってブラウザで認証してください。</div>
+</div>
+
+<!-- 旧手順（Loom案内済みの方へ） -->
+<div class="card" style="border-left: 4px solid #94a3b8;">
+  <h2>【旧手順】Loom動画でセットアップを学んだ方へ</h2>
+  <p>Loom動画で以下の手順（<code>bash 新規スライド.sh</code> → <code>cd projects/xxx</code> → <code>claude 起動</code> → <code>/slides-create</code>）を見た方向けの案内です。</p>
+  <p><strong>結論： 動画通りの手順でも引き続き動きます</strong>（新規スライド.sh は残してあり、スキル側も互換性を維持）。</p>
+
+  <details style="margin-top: 12px;">
+    <summary style="cursor: pointer; font-weight: 700; padding: 8px 0;">旧手順の詳細と、新機能の恩恵を受けるための <code>.env</code> リネーム手順（クリックで展開）</summary>
+    <div style="padding: 12px 0; border-top: 1px solid #e5e7eb; margin-top: 8px;">
+      <h3 style="margin-top: 0;">旧手順（引き続き動作）</h3>
+      <ol>
+        <li><code>bash 新規スライド.sh</code> でプレゼン名を入力 → <code>projects/{名前}/script/台本.md</code> が作られる</li>
+        <li>Cursor で <code>台本.md</code> を開いて内容を貼り付ける</li>
+        <li><code>cd projects/{名前}</code> → <code>claude --dangerously-skip-permissions</code></li>
+        <li><code>/slides-create</code></li>
+      </ol>
+
+      <h3>推奨： <code>.env</code> の変数名リネーム（名前の意味を合わせるだけ）</h3>
+      <p>旧キー <code>GOOGLE_SLIDE_ID</code> のままでも<strong>新仕様（プレゼン毎に独立Slide）は動作します</strong>（コード側で互換性を維持）。ただし変数名の意味が「出力先Slide」から「テンプレSlide」に変わったため、誤解を避けるためリネームを推奨します。</p>
+      <p>Cursor で <code>.env</code> を開いて、以下のように書き換えるだけ（値はそのまま）：</p>
+      <pre><code># Before
+GOOGLE_SLIDE_ID=1ABCxyz...
+
+# After
+TEMPLATE_SLIDE_ID=1ABCxyz...</code></pre>
+      <p>または、<code>bash セットアップ.sh</code> を再実行して <code>.env</code> を再生成してもOKです。</p>
+    </div>
+  </details>
 </div>
 
 <!-- Update -->
