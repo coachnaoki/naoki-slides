@@ -25,6 +25,10 @@ function doPost(e) {
       return jsonResponse(syncSlides(data));
     }
 
+    if (action === "copy") {
+      return jsonResponse(copySlide(data));
+    }
+
     return jsonResponse({ error: `Unknown action: ${action}` });
   } catch (err) {
     return jsonResponse({ error: err.toString(), stack: err.stack });
@@ -38,9 +42,29 @@ function doGet() {
   return jsonResponse({
     ok: true,
     name: "naoki-slides GAS",
-    version: "0.1.0",
-    usage: "POST { action: 'sync', slideId, images: [{name, data(base64)}] }"
+    version: "0.2.0",
+    usage: "POST { action: 'sync', slideId, images: [{name, data(base64)}] } OR { action: 'copy', templateId, newTitle }"
   });
+}
+
+// =====================================================
+// Slideコピー: テンプレSlideから新Slideを複製
+// =====================================================
+function copySlide({ templateId, newTitle }) {
+  if (!templateId) throw new Error("templateId が必要です");
+  if (!newTitle) {
+    newTitle = `スライド-${new Date().toISOString().slice(0, 10)}`;
+  }
+
+  const newFile = DriveApp.getFileById(templateId).makeCopy(newTitle);
+  const newId = newFile.getId();
+
+  return {
+    ok: true,
+    newSlideId: newId,
+    url: `https://docs.google.com/presentation/d/${newId}/edit`,
+    title: newTitle,
+  };
 }
 
 // =====================================================

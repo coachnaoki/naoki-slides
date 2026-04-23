@@ -29,12 +29,15 @@ fi
 # ==========================================
 echo ""
 echo "━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━"
-echo "  Step 1: Google Slide の準備"
+echo "  Step 1: テンプレートSlideの準備"
 echo "━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━"
 echo ""
 echo "  以下のリンクをブラウザで開き、「コピーを作成」を押してください："
 echo ""
 echo "  👉 https://docs.google.com/presentation/d/1aW6bd7VtedxV7KpfWQrbd4d0CH8m1BsbXje1bpOKoQA/copy"
+echo ""
+echo "  ※ このSlideは「テンプレ」として使います。プレゼンを作るたびに"
+echo "    このテンプレから自動でコピーが作られるので、上書きされません。"
 echo ""
 echo "  コピー後、開いたSlideのURL をコピーしてここに貼り付けてください。"
 echo "  例: https://docs.google.com/presentation/d/1ABCxyz.../edit"
@@ -97,7 +100,7 @@ echo "  ✅ GAS URL: ${gas_url:0:60}..."
 cat > .env << EOF
 # naoki-slides 設定（セットアップ.sh で自動生成）
 GAS_WEBHOOK_URL=$gas_url
-GOOGLE_SLIDE_ID=$slide_id
+TEMPLATE_SLIDE_ID=$slide_id
 EOF
 
 echo ""

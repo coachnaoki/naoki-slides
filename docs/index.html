@@ -275,6 +275,7 @@
     <li>コピー後に開いた Slide の URL をコピー</li>
     <li>ターミナルに URL を貼り付けて Enter</li>
   </ol>
+  <div class="note">⚠ このSlideは「<strong>テンプレ専用</strong>」として使われます。実際のプレゼンを作るときは、このテンプレから毎回<strong>自動でコピー</strong>が作られるので、中身を書き換えても構いません（上書きされません）。</div>
 
   <h3>Step 2-2. GAS をデプロイして URL を取得</h3>
   <ol>
@@ -365,10 +366,12 @@ claude --dangerously-skip-permissions</code></pre>
   <ol>
     <li>「新規」か「既存」かを聞かれる → <strong>新規</strong>を選ぶ</li>
     <li>プレゼン名を入力（例: <code>tennis-camp-2026</code>）</li>
-    <li><code>projects/{プレゼン名}/script/台本.md</code> が自動で作られるので、<strong>Cursor で開いて台本を貼り付け</strong>る</li>
+    <li>Claude が自動で以下を実行： <strong>①プロジェクトフォルダ作成</strong> / <strong>②新しいGoogle Slideを作成</strong>（テンプレから自動コピー）</li>
+    <li><code>projects/{プレゼン名}/script/台本.md</code> が作られるので、<strong>Cursor で開いて台本を貼り付け</strong>る</li>
     <li>チャットに<strong>「続けて」</strong>と入力 → そのままスライド設計・生成・反映まで自動進行</li>
   </ol>
 
+  <div class="note">⚠ <strong>過去のプレゼンは上書きされません。</strong> 新規作成ごとに独立した Google Slide が自動で生成されます（Step 1 で作ったSlideはテンプレ専用）。</div>
   <div class="note">ライセンス認証・<code>.env</code> 設定は初回に済んでいるので、そのまま使えます。</div>
 </div>
 

@@ -7,7 +7,9 @@
  *
  * 前提:
  *   - <presentation-dir>/output/slide_001.png ... が存在すること
- *   - naoki-slides/.env に GAS_WEBHOOK_URL と GOOGLE_SLIDE_ID が設定されていること
+ *   - <presentation-dir>/slide-meta.json に描画先 Slide ID が保存されていること
+ *     （未作成なら先に node tools/copy-slide.mjs <presentation-dir> を実行）
+ *   - naoki-slides/.env に GAS_WEBHOOK_URL が設定されていること
  *
  * GASは画像のBase64配列を受け取り、指定Slideを全削除→画像を1枚ずつ貼り付ける。
  */
@@ -28,14 +30,30 @@ if (!presentationDir) {
   process.exit(1);
 }
 
-const { GAS_WEBHOOK_URL, GOOGLE_SLIDE_ID } = process.env;
-if (!GAS_WEBHOOK_URL || !GOOGLE_SLIDE_ID) {
-  console.error("❌ .env に GAS_WEBHOOK_URL と GOOGLE_SLIDE_ID を設定してください。");
-  console.error("   README.md の「初回セットアップ」参照。");
+const { GAS_WEBHOOK_URL } = process.env;
+if (!GAS_WEBHOOK_URL) {
+  console.error("❌ .env に GAS_WEBHOOK_URL を設定してください。");
+  console.error("   bash セットアップ.sh を実行して生成してください。");
   process.exit(1);
 }
 
 const absDir = resolve(presentationDir);
+
+// 描画先 Slide ID を slide-meta.json から読む（プレゼンごとに独立したSlide）
+const metaPath = join(absDir, "slide-meta.json");
+if (!existsSync(metaPath)) {
+  console.error(`❌ slide-meta.json が見つかりません: ${metaPath}`);
+  console.error("   先に次を実行してください:");
+  console.error(`     node tools/copy-slide.mjs "${presentationDir}"`);
+  process.exit(1);
+}
+const meta = JSON.parse(readFileSync(metaPath, "utf-8"));
+const SLIDE_ID = meta.slideId;
+if (!SLIDE_ID) {
+  console.error(`❌ slide-meta.json に slideId がありません: ${metaPath}`);
+  process.exit(1);
+}
+
 const outputDir = join(absDir, "output");
 if (!existsSync(outputDir)) {
   console.error(`❌ output/ フォルダが見つかりません: ${outputDir}`);
@@ -62,7 +80,7 @@ const images = imageFiles.map(f => {
 
 const payload = {
   action: "sync",
-  slideId: GOOGLE_SLIDE_ID,
+  slideId: SLIDE_ID,
   images,
 };
 
@@ -81,7 +99,7 @@ try {
     process.exit(1);
   }
 
-  const url = `https://docs.google.com/presentation/d/${GOOGLE_SLIDE_ID}/edit`;
+  const url = `https://docs.google.com/presentation/d/${SLIDE_ID}/edit`;
   console.log(`\n✅ 完了！Google Slide に ${imageFiles.length}枚を反映しました`);
   console.log(`   ${url}`);
 } catch (e) {
